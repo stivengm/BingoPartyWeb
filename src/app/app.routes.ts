@@ -17,6 +17,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/create-room/create-room').then(m => m.CreateRoom)
     },
     {
+        path: 'lobby',
+        loadComponent: () => import('./features/lobby/lobby').then(m => m.Lobby)
+    },
+    {
         path: '**',
         redirectTo: 'welcome_view'
     }
