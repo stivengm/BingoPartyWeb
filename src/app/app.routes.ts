@@ -13,6 +13,10 @@ export const routes: Routes = [
         component: WelcomeView
     },
     {
+        path: 'create_room',
+        loadComponent: () => import('./features/create-room/create-room').then(m => m.CreateRoom)
+    },
+    {
         path: '**',
         redirectTo: 'welcome_view'
     }

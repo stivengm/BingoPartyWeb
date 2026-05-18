@@ -4,6 +4,7 @@ import { Bingo } from '../../shared/bingo/bingo';
 import { DataAppService } from '../../core/services/data-app.service';
 import { Player } from '../../core/models/player.model';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-welcome-view',
@@ -26,7 +27,10 @@ export class WelcomeView {
     ]
   );
 
-  constructor(private dataApp: DataAppService) {
+  constructor(
+    private dataApp: DataAppService,
+    private router: Router
+  ) {
 
   }
 
@@ -45,6 +49,8 @@ export class WelcomeView {
     }
 
     this.dataApp.setPlayer(player);
+
+    this.router.navigate(['/create_room']);
   }
 
 }
