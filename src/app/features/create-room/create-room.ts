@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
+import { Header } from '../../shared/layout/header/header';
 
 @Component({
   selector: 'app-create-room',
-  imports: [],
+  imports: [
+    Header
+  ],
   templateUrl: './create-room.html',
   styleUrl: './create-room.scss',
 })

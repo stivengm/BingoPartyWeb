@@ -1,0 +1,90 @@
+.content_create_room {
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .section_code_room {
+        border: 2px solid var(--primaryColor);
+        border-radius: 12px;
+        padding: 24px;
+        background-color: var(--whiteColor);
+        .text_room {
+            margin: 0;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 14px;
+            color: var(--colorText);
+        }
+        .section_code {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .code {
+                margin: 0;
+                font-weight: 900;
+                font-size: 40px;
+                color: var(--colorTextWeight);
+            }
+        }
+    }
+    .section_type_game {
+        .text_style_game {
+            text-transform: uppercase;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--colorText);
+        }
+        .options_games {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            .item_game {
+                display: flex;
+                align-items: center;
+                padding: 16px;
+                background-color: var(--whiteColor);
+                border-radius: 12px;
+                border: 2px solid var(--whiteColor);
+                .section_img_icon {
+                    width: 64px;
+                    height: 64px;
+                    background-color: var(--secondaryColor);
+                    border-radius: 100%;
+                }
+            }
+            .selected {
+                border: 2px solid var(--colorTextWeight);
+            }
+        }
+    }
+
+    .section_game_board {
+        .text_game_board {
+            text-transform: uppercase;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--colorText);
+        }
+    }
+
+    .actions_buttons {
+        position: fixed;
+        width: 100%;
+        bottom: 20px;
+        left: 0;
+        display: flex;
+        // align-items: center;
+        justify-content: center;
+        .primary_button {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+            .icon_right {
+                width: 30px;
+            }
+            // position: fixed;
+            // bottom: 0;
+        }
+    }
+}

@@ -5,12 +5,14 @@ import { DataAppService } from '../../core/services/data-app.service';
 import { Player } from '../../core/models/player.model';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Header } from '../../shared/layout/header/header';
 
 @Component({
   selector: 'app-welcome-view',
   imports: [
     Bingo,
     Version,
+    Header,
     ReactiveFormsModule
   ],
   templateUrl: './welcome-view.html',
@@ -50,6 +52,11 @@ export class WelcomeView {
 
     this.dataApp.setPlayer(player);
 
+    if (isHost) {
+      this.router.navigate(['/create_room']);
+      return;
+    }
+    
     this.router.navigate(['/create_room']);
   }
 

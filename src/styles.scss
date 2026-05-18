@@ -4,10 +4,12 @@
 
 :root {
     --primaryColor: #FFD700;
-    --primaryColorWeight: 178, 154, 0;
+    --primaryColorWeight: #705E00;
     --primaryColorWeightRGB: 112, 94, 0;
     --secondaryColor: #8333C6;
     --secondaryColorWeight: #5A1F8C;
+
+    --backgroundApp: #FEF7FF;
 
 
     // INPUTS
@@ -22,6 +24,7 @@
 
     // TEXTOS
     --colorText: #4D4732;
+    --colorTextWeight: #705D00;
     --colorTitles: #231043;
 }
 
@@ -30,6 +33,7 @@ body {
     padding: 0;
     box-sizing: border-box;
     font-family: 'FontWeb', sans-serif;
+    background-color: var(--backgroundApp);
 }
 
 
@@ -65,10 +69,11 @@ body {
     cursor: pointer;
 }
 .primary_button {
+    padding: 0 20px;
     position: relative;
     background-color: var(--primaryColor);
-    -webkit-box-shadow: 0px 4px 0px 0px var(--primaryColorWeight); 
-    box-shadow: 0px 4px 0px 0px (--primaryColorWeight);
+    -webkit-box-shadow: 0px 4px 0px 0px var(--colorTextWeight); 
+    box-shadow: 0px 4px 0px 0px (--colorTextWeight);
 }
 .secondary_button {
     position: relative;
