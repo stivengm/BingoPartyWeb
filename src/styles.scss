@@ -4,9 +4,21 @@
 
 :root {
     --primaryColor: #FFD700;
+    --primaryColorWeight: 178, 154, 0;
+    --primaryColorWeightRGB: 112, 94, 0;
     --secondaryColor: #8333C6;
+    --secondaryColorWeight: #5A1F8C;
 
+
+    // INPUTS
+    --colorInputs: #CD91FF;
+
+    --grayBordersSections: #E5E7EB;
     --grayBorders: #EBDCFF;
+
+    // COLORS
+    --whiteColor: #FFFFFF;
+    --blackColor: #000000;
 
     // TEXTOS
     --colorText: #4D4732;
@@ -18,4 +30,49 @@ body {
     padding: 0;
     box-sizing: border-box;
     font-family: 'FontWeb', sans-serif;
+}
+
+
+// FORMS
+.form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px 0;
+    label {
+        font-weight: bold;
+        font-size: 14px;
+        color: var(--secondaryColor);
+    }
+    input {
+        border: 2px solid var(--colorInputs);
+        border-radius: 6px;
+        height: 45px;
+        padding-left: 15px;
+        font-family: 'FontWeb', sans-serif;
+    }
+    
+}
+
+
+// BUTTONS
+.btn {
+    height: 60px;
+    border-radius: 9999px;
+    border: 0;
+    text-transform: uppercase;
+    font-size: 24px;
+}
+.primary_button {
+    position: relative;
+    background-color: var(--primaryColor);
+    -webkit-box-shadow: 0px 4px 0px 0px var(--primaryColorWeight); 
+    box-shadow: 0px 4px 0px 0px (--primaryColorWeight);
+}
+.secondary_button {
+    position: relative;
+    color: var(--whiteColor);
+    background-color: var(--secondaryColor);
+    -webkit-box-shadow: 0px 4px 0px 0px var(--secondaryColorWeight); 
+    box-shadow: 0px 4px 0px 0px var(--secondaryColorWeight);
 }

@@ -1,0 +1,39 @@
+.section_home_welcome {
+    margin: 30px 20px;
+    padding: 20px;
+    border-radius: 24px;
+    border: 4px solid var(--grayBordersSections);
+    .img_bingo_celebration {
+        width: 100%;
+        border-radius: 16px;
+    }
+    .title_bingo_home {
+        font-size: 24px;
+        text-align: center;
+        color: var(--colorTitles);
+    }
+    .description_bingo_home {
+        text-align: center;
+        font-size: 16px;
+        color: var(--colorText);
+    }
+    .form_user {
+        margin: 30px 0;
+    }
+    .section_actions {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        .primary_button::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 6px;
+            display: block;
+            border-radius: 100%;
+            width: 48px;
+            height: 48px;
+            background-color: rgba(var(--primaryColorWeightRGB), 1);
+        }
+    }
+}
