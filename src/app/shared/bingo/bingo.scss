@@ -1,0 +1,19 @@
+.section_balls_bingo {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    .ball_letter {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        max-width: 48px;
+        max-height: 48px;
+        font-weight: 100;
+        border-radius: 100%;
+        border: 2px solid var(--grayBorders);
+        color: var(--secondaryColor);
+    }
+}

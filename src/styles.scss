@@ -6,11 +6,16 @@
     --primaryColor: #FFD700;
     --secondaryColor: #8333C6;
 
+    --grayBorders: #EBDCFF;
+
     // TEXTOS
     --colorText: #4D4732;
     --colorTitles: #231043;
 }
 
 body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: 'FontWeb', sans-serif;
 }
