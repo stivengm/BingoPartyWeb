@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@use 'fonts';
+
 
 :root {
     --primaryColor: #FFD700;
@@ -7,4 +9,8 @@
     // TEXTOS
     --colorText: #4D4732;
     --colorTitles: #231043;
+}
+
+body {
+    font-family: 'FontWeb', sans-serif;
 }
