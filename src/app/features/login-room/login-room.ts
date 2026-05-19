@@ -3,6 +3,7 @@ import { Header } from '../../shared/layout/header/header';
 import { Player } from '../../core/models/player.model';
 import { DataAppService } from '../../core/services/data-app.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-room',
@@ -25,7 +26,10 @@ export class LoginRoom implements OnInit {
   ];
 
 
-  constructor(private dataApp: DataAppService) {
+  constructor(
+    private dataApp: DataAppService,
+    private router: Router
+  ) {
 
   }
 
@@ -57,6 +61,10 @@ export class LoginRoom implements OnInit {
     }
 
     console.log(this.roomControl.value);
+  }
+
+  joinRoom() {
+    this.router.navigate(['lobby']);
   }
 
 }
