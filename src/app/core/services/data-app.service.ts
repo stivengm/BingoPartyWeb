@@ -1,11 +1,18 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Player } from '../models/player.model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataAppService {
+
+    constructor(private router: Router) {}
+
+    public goToPage(url: string) {
+        this.router.navigate([url]);
+    }
 
     public saveStorage(key: string, data: any) {
         sessionStorage.setItem(key, JSON.stringify(data));

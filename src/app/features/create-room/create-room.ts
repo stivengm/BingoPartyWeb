@@ -3,6 +3,7 @@ import { Header } from '../../shared/layout/header/header';
 import { Router } from '@angular/router';
 import { CommonModule, NgClass } from "@angular/common";
 import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
+import { DataAppService } from '../../core/services/data-app.service';
 
 @Component({
   selector: 'app-create-room',
@@ -22,10 +23,16 @@ export class CreateRoom {
 
   boards = [1, 2, 3, 4, 5, 6, 7, 8];
 
-  constructor(private router: Router) {}
+  constructor(
+    private dataApp: DataAppService
+  ) {}
+
+  returnWelcome() {
+    this.dataApp.goToPage("/welcome_view");
+  }
 
   createRoom() {
-    this.router.navigate(['lobby']);
+    this.dataApp.goToPage("/lobby");
   }
 
   selectedGameType(id: number) {

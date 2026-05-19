@@ -63,7 +63,7 @@ export class LoginRoom implements OnInit {
   }
 
   joinRoom() {
-    this.router.navigate(['lobby']);
+    this.dataApp.goToPage("/lobby");
   }
 
 }

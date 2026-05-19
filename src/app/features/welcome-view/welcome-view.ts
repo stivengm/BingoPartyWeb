@@ -73,11 +73,11 @@ export class WelcomeView implements OnInit {
     this.dataApp.setPlayer(player);
 
     if (isHost) {
-      this.router.navigate(['/create_room']);
+      this.dataApp.goToPage("/create_room");
       return;
     }
     
-    this.router.navigate(['/login_room']);
+    this.dataApp.goToPage("/login_room");
   }
 
 }
