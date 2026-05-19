@@ -12,6 +12,8 @@ export class TableroBingo {
   @Input() cells: BingoCell[][] | null = null;
   @Input() isBoardDisabled = false;
 
+  letters = ['B', 'I', 'N', 'G', 'O'];
+
   board: BingoCell[][] = [];
 
   ngOnInit(): void {

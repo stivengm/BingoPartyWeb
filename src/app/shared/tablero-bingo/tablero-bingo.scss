@@ -5,9 +5,25 @@
     width: 100%;
     background-color: var(--bgCardGameBoard);
     border-radius: 30px;
-    padding:  20px;
+    padding:  0px 20px 20px 20px;
     box-sizing: border-box;
-
+    .board_letters {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        .board_letter {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-size: 60px;
+            font-weight: bold;
+            color: var(--whiteColor);
+            font-family: "BBH-Hegarty", sans-serif;
+            text-shadow: 4px 4px 6px rgba(0, 0, 0, .5);
+        }
+    }
 }
 
 .board_row {
@@ -25,7 +41,6 @@
 
     background: var(--bgCellsItemsBoard);
     border-radius: 6px;
-    // border: 3px solid #ddd;
 
     font-size: 20px;
     font-weight: bold;
@@ -37,6 +52,8 @@
 }
 
 .board_cell.marked {
-    background-color: gold;
-    transform: scale(0.95);
+    // background-color: gold;
+    // transform: scale(0.95);
+    border: 5px solid rgb(202, 153, 6) !important;
+    background-color: rgb(243, 212, 118) !important;
 }
