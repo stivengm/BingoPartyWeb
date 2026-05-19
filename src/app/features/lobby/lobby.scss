@@ -24,6 +24,9 @@
         padding: 16px;
         border-radius: 12px;
         background-color: var(--bgKeyboard);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
         .header_card_assigned {
             display: flex;
             justify-content: space-between;

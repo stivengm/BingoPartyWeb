@@ -10,6 +10,7 @@ import { BingoCell } from '../../core/models/bingo_cell.model';
 })
 export class TableroBingo {
   @Input() cells: BingoCell[][] | null = null;
+  @Input() isViewLetters = true;
   @Input() isBoardDisabled = false;
 
   letters = ['B', 'I', 'N', 'G', 'O'];
