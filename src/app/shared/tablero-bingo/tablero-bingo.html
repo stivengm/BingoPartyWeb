@@ -1,0 +1,17 @@
+<div class="board">
+    @for (row of board; track $index) {
+        <div class="board_row">
+            @for (cell of row; track $index) {
+                <div
+                    class="board_cell"
+                    [class.marked]="cell.marked"
+                    [class.disabled]="cell.disabled"
+                    [class]="cell.cssClass"
+                    (click)="onSelect(cell)"
+                >
+                    {{ cell.value }}
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,41 @@
+.board {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    background-color: var(--bgCardGameBoard);
+    padding:  10px;
+    box-sizing: border-box;
+
+}
+
+.board_row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.board_cell {
+    aspect-ratio: 1 / 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--bgCellsItemsBoard);
+    border-radius: 6px;
+    // border: 3px solid #ddd;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition: .2s;
+}
+
+.board_cell.marked {
+    background-color: gold;
+    transform: scale(0.95);
+}

@@ -38,25 +38,13 @@
     <div class="section_game_board">
         <p class="text_game_board">Estilo de cartón</p>
 
-        <div class="options_games">
-            <div class="item_game selected">
-                <div class="section_img_icon">
-                    <img src="" alt="">
+        <div class="options_games_boards">
+            @for (board of boards; track $index) {
+                <div class="item_board">
+                    <app-tablero-bingo [isBoardDisabled]="true"></app-tablero-bingo>
+                    <!-- <p>Tipo de tablero</p> -->
                 </div>
-                <div>
-                    <h3>Juego Digital</h3>
-                    <p>Sorteo automático animado</p>
-                </div>
-            </div>
-            <div class="item_game">
-                <div class="section_img_icon">
-                    <img src="" alt="">
-                </div>
-                <div>
-                    <h3>Juego Físico</h3>
-                    <p>Marcado manual de bolillas</p>
-                </div>
-            </div>
+            }
         </div>
     </div>
 

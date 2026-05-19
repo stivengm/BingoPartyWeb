@@ -126,6 +126,17 @@
             font-weight: bold;
             color: var(--colorText);
         }
+        .options_games_boards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+
+            .item_board {
+                background-color: var(--whiteColor);
+                border-radius: 16px;
+                aspect-ratio: 1 / 1;
+            }
+        }
     }
 
     .actions_buttons {
@@ -134,7 +145,6 @@
         bottom: 20px;
         left: 0;
         display: flex;
-        // align-items: center;
         justify-content: center;
         .primary_button {
             display: flex;
@@ -144,8 +154,6 @@
             .icon_right {
                 width: 30px;
             }
-            // position: fixed;
-            // bottom: 0;
         }
     }
 }
