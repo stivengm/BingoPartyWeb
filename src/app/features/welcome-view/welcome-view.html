@@ -16,8 +16,20 @@
     </div>
 
     <div class="section_actions">
-        <button class="btn primary_button" (click)="selectUser(true)">Ser el host</button>
-        <button class="btn secondary_button" (click)="selectUser(false)">Unirme al juego</button>
+        <button class="btn primary_button" (click)="selectUser(true)">
+            <div class="section_icon_king">
+                <img src="assets/icons/king.svg" alt="Icono corona">
+            </div>
+            Ser el host
+            <img src="assets/icons/arrow-right-button.svg" class="icon_arrow" alt="Icono flecha a la derecha">
+        </button>
+        <button class="btn secondary_button" (click)="selectUser(false)">
+            <div class="section_icon_users">
+                <img src="assets/icons/users.svg" alt="Icono usuarios">
+            </div>
+            Unirme al juego
+            <img src="assets/icons/arrow-right-line.svg" alt="Icono flecha a la derecha login">
+        </button>
     </div>
 </div>
 

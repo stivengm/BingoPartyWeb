@@ -79,12 +79,16 @@ body {
 .primary_button {
     padding: 0 20px;
     position: relative;
+    font-weight: 600;
+    color: var(--primaryColorWeight);
     background-color: var(--primaryColor);
     -webkit-box-shadow: 0px 4px 0px 0px var(--colorTextWeight); 
     box-shadow: 0px 4px 0px 0px (--colorTextWeight);
 }
 .secondary_button {
+    padding: 0 20px;
     position: relative;
+    font-weight: 600;
     color: var(--whiteColor);
     background-color: var(--secondaryColor);
     -webkit-box-shadow: 0px 4px 0px 0px var(--secondaryColorWeight); 
