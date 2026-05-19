@@ -135,6 +135,18 @@
             .item_board {
                 border-radius: 16px;
                 width: 100%;
+                border: 2px solid var(--whiteColor);
+                background-color: var(--whiteColor);
+                .img_board {
+                    width: 100%;
+                    border-radius: 15px;
+                }
+            }
+            .selected {
+                border: 2px solid var(--colorTextWeight);
+                -webkit-box-shadow: 0px 0px 0px 6px rgba(var(--primaryColorLight), .45); 
+                box-shadow: 0px 0px 0px 6px rgba(var(--primaryColorLight), .45);
+                position: relative;
             }
         }
     }

@@ -18,6 +18,7 @@ import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
 export class CreateRoom {
 
   idGameType = 0;
+  idBoardType = 0;
 
   boards = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -29,5 +30,9 @@ export class CreateRoom {
 
   selectedGameType(id: number) {
     this.idGameType = id;
+  }
+
+  selectedBoardType(id: number) {
+    this.idBoardType = id;
   }
 }

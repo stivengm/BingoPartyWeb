@@ -40,8 +40,8 @@
 
         <div class="options_games_boards">
             @for (board of boards; track $index) {
-                <div class="item_board">
-                    <img [src]="'assets/images/bingo_tarjeton_' + ($index + 1)  +'.png'" style="width: 100%;" alt="">
+                <div class="item_board" [ngClass]="{'selected': idBoardType == ($index + 1) }" (click)="selectedBoardType($index + 1)">
+                    <img class="img_board" [src]="'assets/images/bingo_tarjeton_' + ($index + 1)  +'.png'" [alt]="'Tablero de Bingo número' + ($index + 1)">
                 </div>
             }
         </div>
