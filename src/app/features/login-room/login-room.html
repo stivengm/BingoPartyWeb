@@ -16,7 +16,7 @@
     </div>
 
     <div class="content_room_join">
-        <input type="text" class="input_id_room" placeholder="ID DE LA SALA">
+        <input type="text" class="input_id_room" placeholder="ID DE LA SALA" [formControl]="roomControl">
 
         <div class="keyboard">
             @for (key of keys; track $index) {
