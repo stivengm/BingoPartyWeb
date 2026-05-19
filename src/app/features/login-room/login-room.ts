@@ -35,7 +35,6 @@ export class LoginRoom implements OnInit {
 
   ngOnInit() {
     this.dataApp.getPlayer().subscribe((player) => {
-      debugger;
       this.player = player;
       console.log(player);
     });

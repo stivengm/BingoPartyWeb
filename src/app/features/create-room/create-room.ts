@@ -28,9 +28,6 @@ export class CreateRoom {
   }
 
   selectedGameType(id: number) {
-    debugger;
-
     this.idGameType = id;
-
   }
 }
