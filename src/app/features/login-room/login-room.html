@@ -1,1 +1,47 @@
-<p>login-room works!</p>
+<app-header></app-header>
+
+
+<div class="content_login_room">
+
+    <!-- <div class="">
+
+        <img src="" alt="">
+    </div> -->
+
+    <div class="info_user">
+        <h1 class="hello_user">¡Hola, {{player?.name}}! 👋</h1>
+    
+        <h2 class="login_room">Únete a una partida</h2>
+        <p class="description_login_room">Introduce el código para jugar con tus amigos</p>
+    </div>
+
+    <div class="content_room_join">
+        <input type="text" class="input_id_room" placeholder="ID DE LA SALA">
+
+        <div class="keyboard">
+            @for (key of keys; track $index) {
+                <button
+                    class="key"
+                    (click)="pressKey(key)">
+                    @if (key.toLowerCase() == 'del') {
+                        <img src="assets/icons/delete.svg" alt="Icono eliminar letra">
+                    } @else if (key.toLowerCase() == 'clean') {
+                        <img src="assets/icons/remove.svg" alt="Icono eliminar letra">
+                    } @else {
+                        {{ key }}
+                    }
+                </button>
+            }
+        </div>
+
+        <div class="sections_actions">
+            <button class="btn primary_button">Entrar a la sala</button>
+        </div>
+    </div>
+
+    <div class="more_info">
+        <img src="assets/icons/info.svg" alt="Icono de información">
+        <p class="text_info">Las salas privadas permiten ganar premios exclusivos con tus amigos en tiempo real.</p>
+    </div>
+
+</div>

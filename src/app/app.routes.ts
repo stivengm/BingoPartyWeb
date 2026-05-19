@@ -17,6 +17,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/create-room/create-room').then(m => m.CreateRoom)
     },
     {
+        path: 'login_room',
+        loadComponent: () => import('./features/login-room/login-room').then(m => m.LoginRoom)
+    },
+    {
         path: 'lobby',
         loadComponent: () => import('./features/lobby/lobby').then(m => m.Lobby)
     },

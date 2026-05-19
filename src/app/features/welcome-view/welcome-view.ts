@@ -57,7 +57,7 @@ export class WelcomeView {
       return;
     }
     
-    this.router.navigate(['/create_room']);
+    this.router.navigate(['/login_room']);
   }
 
 }

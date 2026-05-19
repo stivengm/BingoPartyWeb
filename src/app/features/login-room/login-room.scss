@@ -1,0 +1,79 @@
+.content_login_room {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    .info_user {
+        .hello_user {
+            margin: 0;
+            font-size: 35px;
+            font-weight: bold;
+            text-align: center;
+            color: var(--colorText);
+        }
+        .login_room {
+            margin: 0;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            color: var(--secondaryColor);
+        }
+        .description_login_room {
+            text-align: center;
+            font-size: 16px;
+            margin: 0;
+            color: var(--colorText);
+        }
+    }
+    .content_room_join {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        .input_id_room {
+            height: 70px;
+            font-size: 28px;
+            text-align: center;
+            color: var(--secondaryColor);
+            border: 2px solid var(--colorInputs);
+            border-radius: 12px;
+        }
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background-color: var(--bgKeyboard);
+            gap: 12px;
+            width: auto;
+            padding: 16px;
+            border-radius: 24px;
+            .key {
+                height: 60px;
+                border: none;
+                border-radius: 16px;
+                font-size: 20px;
+                font-weight: bold;
+                background-color: var(--whiteColor);
+                cursor: pointer;
+                img {
+                    width: 25px;
+                }
+            }
+        }
+        .sections_actions {
+            .primary_button {
+                width: 100%;
+            }
+        }
+    }
+    .more_info {
+        display: flex;
+        background-color: rgba(var(--bgInfoSections), .5);
+        padding: 16px;
+        gap: 10px;
+        align-items: start;
+        border-radius: 16px;
+        .text_info {
+            margin: 0;
+            color: var(--greenColor);
+        }
+    }
+}
