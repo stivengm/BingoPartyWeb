@@ -8,12 +8,21 @@
     <h1 class="title_bingo_home">¡Te damos la bienvenida!</h1>
     <p class="description_bingo_home">Prepárate para la emoción del mejor Bingo social.</p>
 
-    <div class="form_user">
-        <div class="form_group">
-            <label for="alias">Nombre de jugador</label>
-            <input type="text" id="alias" name="alias" placeholder="Escribe tu alias..." [formControl]="aliasControl">
+    @if (player) {
+        <div class="info_user">
+            <h1 class="hello_user">¡Hola, {{player.name}}! 👋</h1>
+        
+            <h2 class="login_room">Únete a una partida</h2>
+            <p class="description_login_room">¿Quieres volver a jugar con la cuenta de {{ player.name }}?</p>
         </div>
-    </div>
+    } @else {
+        <div class="form_user">
+            <div class="form_group">
+                <label for="alias">Nombre de jugador</label>
+                <input type="text" id="alias" name="alias" placeholder="Escribe tu alias..." [formControl]="aliasControl">
+            </div>
+        </div>
+    }
 
     <div class="section_actions">
         <button class="btn primary_button" (click)="selectUser(true)">

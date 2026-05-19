@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Version } from "../../shared/version/version";
 import { Bingo } from '../../shared/bingo/bingo';
 import { DataAppService } from '../../core/services/data-app.service';
@@ -18,7 +18,9 @@ import { Header } from '../../shared/layout/header/header';
   templateUrl: './welcome-view.html',
   styleUrl: './welcome-view.scss',
 })
-export class WelcomeView {
+export class WelcomeView implements OnInit {
+
+  player: Player | null = null;
 
   public aliasControl = new FormControl(
     '',
@@ -34,6 +36,22 @@ export class WelcomeView {
     private router: Router
   ) {
 
+  }
+
+  ngOnInit() {
+    this.dataApp.getPlayer().subscribe((player) => {
+      if (player != null) return;
+
+      let playerStorage = this.dataApp.getStorage('player') as Player;
+
+      debugger;
+
+      if (playerStorage == null || playerStorage == undefined) return;
+
+
+      this.player = playerStorage;
+      this.dataApp.setPlayer(playerStorage);
+    });
   }
 
   selectUser(isHost: boolean = false) {
