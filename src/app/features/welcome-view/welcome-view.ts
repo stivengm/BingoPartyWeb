@@ -34,23 +34,25 @@ export class WelcomeView implements OnInit {
   constructor(
     private dataApp: DataAppService,
     private router: Router
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {
     this.dataApp.getPlayer().subscribe((player) => {
-      if (player != null) return;
+      if (player != null) {
+        this.player = player;
+        this.aliasControl.patchValue(player.name);
+        return;
+      }
 
       let playerStorage = this.dataApp.getStorage('player') as Player;
 
-      debugger;
+      if (playerStorage === null) return;
 
-      if (playerStorage == null || playerStorage == undefined) return;
-
-
+      if (player == null) {
+        this.dataApp.setPlayer(playerStorage);
+      }
       this.player = playerStorage;
-      this.dataApp.setPlayer(playerStorage);
+      this.aliasControl.patchValue(playerStorage.name);
     });
   }
 
