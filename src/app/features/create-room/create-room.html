@@ -41,8 +41,7 @@
         <div class="options_games_boards">
             @for (board of boards; track $index) {
                 <div class="item_board">
-                    <app-tablero-bingo [isBoardDisabled]="true"></app-tablero-bingo>
-                    <!-- <p>Tipo de tablero</p> -->
+                    <img [src]="'assets/images/bingo_tarjeton_' + ($index + 1)  +'.png'" style="width: 100%;" alt="">
                 </div>
             }
         </div>

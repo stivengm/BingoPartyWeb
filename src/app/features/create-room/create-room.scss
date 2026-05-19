@@ -130,11 +130,10 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
-
+            box-sizing: border-box;
             .item_board {
-                background-color: var(--whiteColor);
                 border-radius: 16px;
-                aspect-ratio: 1 / 1;
+                width: 100%;
             }
         }
     }
