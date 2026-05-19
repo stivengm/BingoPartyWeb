@@ -4,7 +4,8 @@
     gap: 8px;
     width: 100%;
     background-color: var(--bgCardGameBoard);
-    padding:  10px;
+    border-radius: 30px;
+    padding:  20px;
     box-sizing: border-box;
 
 }
@@ -12,7 +13,7 @@
 .board_row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    gap: 10px;
 }
 
 .board_cell {

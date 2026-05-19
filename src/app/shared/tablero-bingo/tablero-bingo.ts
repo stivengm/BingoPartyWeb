@@ -25,7 +25,6 @@ export class TableroBingo {
   }
 
   generateEmptyBoard(): void {
-
     this.board = Array.from({ length: 5 }, () =>
       Array.from({ length: 5 }, () => ({
         value: ''

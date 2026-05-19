@@ -25,6 +25,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/lobby/lobby').then(m => m.Lobby)
     },
     {
+        path: 'game_curse',
+        loadComponent: () => import('./features/game/game').then(m => m.Game)
+    },
+    {
         path: '**',
         redirectTo: 'welcome_view'
     }
