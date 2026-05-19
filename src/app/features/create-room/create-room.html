@@ -3,7 +3,7 @@
 <div class="content_create_room">
     <div class="section_code_room">
         <p class="text_room">Código de la sala</p>
-    
+        
         <div class="section_code">
             <h2 class="code">#B1NGO</h2>
             <button class="btn primary_button">Copiar</button>
@@ -14,22 +14,22 @@
         <p class="text_style_game">Tipo de juego</p>
 
         <div class="options_games">
-            <div class="item_game selected">
+            <div class="item_game" [ngClass]="{'selected': idGameType == 1 }" (click)="selectedGameType(1)">
                 <div class="section_img_icon">
-                    <img src="" alt="">
+                    <img src="assets/images/digital-game.svg" alt="Icono juego digital">
                 </div>
-                <div>
-                    <h3>Juego Digital</h3>
-                    <p>Sorteo automático animado</p>
+                <div class="info_game_type">
+                    <h3 class="title_game_type">Juego Digital</h3>
+                    <p class="description_game_type">Sorteo automático animado</p>
                 </div>
             </div>
-            <div class="item_game">
+            <div class="item_game" [ngClass]="{'selected': idGameType == 2 }" (click)="selectedGameType(2)">
                 <div class="section_img_icon">
-                    <img src="" alt="">
+                    <img src="assets/images/physical-game.svg" alt="Icono juego físico">
                 </div>
-                <div>
-                    <h3>Juego Físico</h3>
-                    <p>Marcado manual de bolillas</p>
+                <div class="info_game_type">
+                    <h3 class="title_game_type">Juego Físico</h3>
+                    <p class="description_game_type">Marcado manual de bolillas</p>
                 </div>
             </div>
         </div>

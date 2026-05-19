@@ -7,7 +7,21 @@
         border: 2px solid var(--primaryColor);
         border-radius: 12px;
         padding: 24px;
+        position: relative;
         background-color: var(--whiteColor);
+        overflow: hidden;
+        &::after {
+            content: '';
+            position: absolute;
+            right: -25px;
+            top: -20px;
+            border-radius: 100%;
+            display: block;
+            width: 96px;
+            height: 96px;
+            z-index: 0;
+            background-color: rgba(var(--primaryColorLight), .45);
+        }
         .text_room {
             margin: 0;
             text-transform: uppercase;
@@ -25,6 +39,9 @@
                 font-size: 40px;
                 color: var(--colorTextWeight);
             }
+            .primary_button {
+                z-index: 10;
+            }
         }
     }
     .section_type_game {
@@ -39,21 +56,65 @@
             flex-direction: column;
             gap: 30px;
             .item_game {
+                transition: all 1s;
                 display: flex;
                 align-items: center;
                 padding: 16px;
                 background-color: var(--whiteColor);
                 border-radius: 12px;
+                gap: 16px;
                 border: 2px solid var(--whiteColor);
+                cursor: pointer;
                 .section_img_icon {
                     width: 64px;
                     height: 64px;
-                    background-color: var(--secondaryColor);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: rgba(var(--secondaryColorWeightRGB), .2);
                     border-radius: 100%;
+                    img {
+                        width: 30px;
+                    }
+                }
+                .info_game_type {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                    .title_game_type {
+                        margin: 0;
+                        font-size: 14px;
+                        font-weight: bold;
+                        color: var(--colorText);
+                    }
+                    .description_game_type {
+                        margin: 0;
+                        font-size: 14px;
+                        color: var(--colorText);
+                    }
                 }
             }
             .selected {
                 border: 2px solid var(--colorTextWeight);
+                -webkit-box-shadow: 0px 0px 0px 6px rgba(var(--primaryColorLight), .45); 
+                box-shadow: 0px 0px 0px 6px rgba(var(--primaryColorLight), .45);
+                position: relative;
+                &::after {
+                    content: '';
+                    position: absolute;
+                    right: 20px;
+                    background-image: url(../../../assets/icons/check.svg);
+                    width: 20px;
+                    height: 20px;
+                }
+                .section_img_icon {
+                    background-color: rgba(var(--secondaryColorWeightRGB), .5);
+                }
+                .info_game_type {
+                    .title_game_type {
+                        color: var(--colorTitles);
+                    }
+                }
             }
         }
     }
