@@ -1,23 +1,36 @@
+<app-header></app-header>
+
 <div class="content_lobby">
 
     <div class="section_actual_lobby">
-        <p>Sala actual</p>
-        <h2>#B1NGO</h2>
+        <p class="actual_room">Sala actual</p>
+        <h2 class="room_id">#B1NGO</h2>
     </div>
 
-    <div class="section_tarjeton_card_asiggned">
+    <div class="section_tarjeton_card_asigned">
+        <div class="header_card_assigned">
+            <h2 class="title_card_asigned">Tu tarjetón asignado</h2>
 
+            <img src="assets/icons/refresh.svg" alt="Icono refrescar tarjetón">
+        </div>
     </div>
 
     <div class="section_players_lobby">
+        <div class="header_players_lobby">
+            <h3>Jugadores en la sala</h3>
 
+            <p>8 Conectados</p>
+        </div>
 
 
     </div>
 
 
-    <div>
-        <p>Esperando al Host para iniciar...</p>
+    <div class="section_waiting_host">
+        <div class="message_waiting_host">
+            <div class="connected"></div>
+            <p class="message">Esperando al Host para iniciar...</p>
+        </div>
     </div>
 
 </div>
