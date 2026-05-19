@@ -6,6 +6,7 @@ import { Player } from '../../core/models/player.model';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Header } from '../../shared/layout/header/header';
+import { errorModal } from '../../utils/modals';
 
 @Component({
   selector: 'app-welcome-view',
@@ -58,6 +59,7 @@ export class WelcomeView implements OnInit {
 
   selectUser(isHost: boolean = false) {
     if (this.aliasControl.invalid) {
+      errorModal({ title: "Por favor ingrese el nombre del jugador."});
       this.aliasControl.markAsTouched();
       return;
     }
