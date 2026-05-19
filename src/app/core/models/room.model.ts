@@ -2,11 +2,12 @@ import { Ball } from "./ball.model";
 import { Player } from "./player.model";
 
 export interface Room {
-  id: string;
-  hostId: string;
-  players: Player[];
+  id?: string;
+  hostId?: string;
+  players?: Player[];
   currentBall?: Ball;
-  calledBalls: Ball[];
-  status: 'waiting' | 'playing' | 'finished';
-  mode: 'automatic' | 'manual';
+  calledBalls?: Ball[];
+  bingoBoardId?: number;
+  status?: 'waiting' | 'playing' | 'finished';
+  mode?: 'automatic' | 'manual';
 }

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Header } from '../../shared/layout/header/header';
-import { Router } from '@angular/router';
 import { CommonModule, NgClass } from "@angular/common";
 import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
 import { DataAppService } from '../../core/services/data-app.service';
 import { errorModal } from '../../utils/modals';
+import { Room } from '../../core/models/room.model';
 
 @Component({
   selector: 'app-create-room',
@@ -25,6 +25,8 @@ export class CreateRoom {
   idRoom = "";
 
   boards = [1, 2, 3, 4, 5, 6, 7, 8];
+
+  room: Room = {} as Room;
 
   constructor(
     private dataApp: DataAppService
@@ -51,15 +53,23 @@ export class CreateRoom {
       return;
     }
 
-    // TODO: Realizar la creación de la sala.
+    this.room!.id = this.idRoom;
+    this.room!.hostId = this.idRoom;
+    this.room!.status = 'waiting';
+
+    this.dataApp.setRoom(this.room!);
+
+    // TODO: Realizar la creación de la sala con servicio.
     this.dataApp.goToPage("/lobby");
   }
 
   selectedGameType(id: number) {
     this.idGameType = id;
+    this.room!.mode = id === 1 ? 'automatic' : 'manual';
   }
 
   selectedBoardType(id: number) {
     this.idBoardType = id;
+    this.room!.bingoBoardId = id;
   }
 }

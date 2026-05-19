@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Player } from '../models/player.model';
 import { Router } from '@angular/router';
+import { Room } from '../models/room.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,23 @@ export class DataAppService {
 
     public getCurrentPlayer(): Player | null {
         return this.$player.getValue();
+    }
+    //#endregion
+
+    //#region Evento para almacenar el room actual
+    private $room = new BehaviorSubject<Room | null>(null);
+
+    public setRoom(val: Room): void {
+        this.$room.next(val);
+        this.saveStorage('room', val);
+    }
+
+    public getRoom(): Observable<any> {
+        return this.$room.asObservable();
+    }
+
+    public getCurrentRoom(): Room | null {
+        return this.$room.getValue();
     }
     //#endregion
 }
