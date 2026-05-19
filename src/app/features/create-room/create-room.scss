@@ -2,7 +2,20 @@
     padding: 30px 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 27px;
+    .return {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        width: max-content;
+        p {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--colorTitles);
+            margin: 0;
+        };
+    }
     .section_code_room {
         border: 2px solid var(--primaryColor);
         border-radius: 12px;
