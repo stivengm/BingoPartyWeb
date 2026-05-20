@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Player } from '../models/player.model';
 import { Router } from '@angular/router';
 import { Room } from '../models/room.model';
+import { BingoCell } from '../models/bingo_cell.model';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +61,23 @@ export class DataAppService {
 
     public getCurrentRoom(): Room | null {
         return this.$room.getValue();
+    }
+    //#endregion
+
+    //#region Evento para almacenar el Board actual
+    private $board = new BehaviorSubject<BingoCell[][] | null>(null);
+
+    public setBoard(val: BingoCell[][]): void {
+        this.$board.next(val);
+        this.saveStorage('board', val);
+    }
+
+    public getBoard(): Observable<any> {
+        return this.$board.asObservable();
+    }
+
+    public getCurrentBoard(): BingoCell[][] | null {
+        return this.$board.getValue();
     }
     //#endregion
 }

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { BingoBoard } from '../../core/models/bingo_board.model';
 import { BingoCell } from '../../core/models/bingo_cell.model';
+import { DataAppService } from '../../core/services/data-app.service';
 
 @Component({
   selector: 'app-tablero-bingo',
@@ -17,14 +18,23 @@ export class TableroBingo {
 
   board: BingoCell[][] = [];
 
-  ngOnInit(): void {
+  timer = 10;
 
+  constructor(private dataApp: DataAppService) {}
+
+  ngOnInit(): void {
     if (this.cells && this.cells.length > 0) {
       this.board = this.cells;
       return;
     }
 
-    this.generateEmptyBoard();
+    this.dataApp.getBoard().subscribe((board) => {
+      if (board === null) {
+        this.generateEmptyBoard();
+      };
+
+      this.board = board;
+    });
   }
 
   generateEmptyBoard(): void {

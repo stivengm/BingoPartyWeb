@@ -10,7 +10,7 @@
         <div class="header_card_assigned">
             <h2 class="title_card_asigned">Tu tarjetón asignado</h2>
 
-            <img src="assets/icons/refresh.svg" alt="Icono refrescar tarjetón">
+            <img src="assets/icons/refresh.svg" (click)="generateBingoBoard()" alt="Icono refrescar tarjetón">
         </div>
 
         <app-tablero-bingo [isViewLetters]="false" [isBoardDisabled]="true"></app-tablero-bingo>
