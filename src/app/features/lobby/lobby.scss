@@ -35,6 +35,23 @@
             }
         }
     }
+    .actions_buttons {
+        position: fixed;
+        width: 100%;
+        bottom: 20px;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        .primary_button {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+            .icon_right {
+                width: 30px;
+            }
+        }
+    }
     .section_waiting_host {
         display: flex;
         flex-direction: column;

@@ -1,10 +1,9 @@
 <app-header></app-header>
 
 <div class="content_lobby">
-
     <div class="section_actual_lobby">
         <p class="actual_room">Sala actual</p>
-        <h2 class="room_id">#B1NGO</h2>
+        <h2 class="room_id">#{{ room.hostId }}</h2>
     </div>
 
     <div class="section_tarjeton_card_asigned">
@@ -27,12 +26,19 @@
 
     </div>
 
-
-    <div class="section_waiting_host">
-        <div class="message_waiting_host">
-            <div class="connected"></div>
-            <p class="message">Esperando al Host para iniciar...</p>
+    @if (player.isHost) {
+        <div class="actions_buttons">
+            <button class="btn primary_button" (click)="goToPlay()">
+                <span>Iniciar juego</span>
+                <img class="icon_right" src="assets/icons/arrow-right.svg" alt="Icono flecha a la derecha">
+            </button>
         </div>
-    </div>
-
+    } @else {
+        <div class="section_waiting_host">
+            <div class="message_waiting_host">
+                <div class="connected"></div>
+                <p class="message">Esperando al Host para iniciar...</p>
+            </div>
+        </div>
+    }
 </div>
