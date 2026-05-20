@@ -1,0 +1,78 @@
+.section_timer_countdown {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+    .time {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 42px;
+        font-weight: 700;
+        color: var(--secondaryColor);
+    }
+    .header_digital_mode {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+        .section_digital_mode {
+            position: absolute;
+            padding: 7px 13px;
+            border-radius: 20px;
+            background-color: rgba(var(--secondaryColorWeightRGB), .3);
+            p {
+                text-transform: uppercase;
+                margin: 0;
+                font-weight: 600;
+                color: var(--secondaryColor);
+                font-size: 13px;
+            }
+        }
+    }
+    .countdown {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        svg {
+            position: absolute;
+            transform: rotate(-90deg);
+            circle {
+                fill: none;
+                stroke-width: 10;
+            }
+            .background {
+                stroke: rgba(var(--secondaryColorWeightRGB), .2);
+            }
+            .progress {
+                stroke: var(--secondaryColor);
+                stroke-linecap: round;
+                transition: stroke-dashoffset 1s linear;
+            }
+        }
+        .ball_information {
+            width: 128px;
+            height: 128px;
+            border-radius: 100%;
+            background-color: var(--whiteColor);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            .letter_ball {
+                font-size: 30px;
+                margin: 0;
+                color: var(--secondaryColor);
+            }
+            .number_ball{
+                margin: 0;
+                font-size: 40px;
+                color: var(--colorText);
+            }
+        }
+    }
+}

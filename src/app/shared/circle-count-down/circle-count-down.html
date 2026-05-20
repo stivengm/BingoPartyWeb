@@ -1,0 +1,32 @@
+<div class="section_timer_countdown">
+    <div class="time">
+        {{ timer() }}
+    </div>
+
+    <div class="header_digital_mode">
+        <div class="section_digital_mode">
+            <p>Modo digital</p>
+        </div>
+    </div>
+
+    <div class="countdown">
+        <svg width="140" height="140">
+            <circle
+                class="background"
+                cx="70"
+                cy="70"
+                [attr.r]="radius"/>
+            <circle
+                class="progress"
+                cx="70"
+                cy="70"
+                [attr.r]="radius"
+                [style.stroke-dasharray]="circumference"
+                [style.stroke-dashoffset]="getStrokeOffset()"/>
+        </svg>
+        <div class="ball_information">
+            <h3 class="letter_ball">B</h3>
+            <h1 class="number_ball">12</h1>
+        </div>
+    </div>
+</div>
