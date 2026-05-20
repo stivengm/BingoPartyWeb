@@ -14,5 +14,6 @@ export class Header {
   goToHome() {
     this.dataApp.clearStorage();
     this.dataApp.goToPage('/welcome_view');
+    this.dataApp.setPlayer(null);
   }
 }
