@@ -29,11 +29,19 @@ export class TableroBingo {
     }
 
     this.dataApp.getBoard().subscribe((board) => {
-      if (board === null) {
-        this.generateEmptyBoard();
-      };
+      if (board) {
+        this.board = board;
+        return;
+      }
 
-      this.board = board;
+      const boardStorage = this.dataApp.getStorage('board') as BingoCell[][];
+
+      if (boardStorage) {
+        this.board = boardStorage;
+        return;
+      }
+
+      this.generateEmptyBoard();
     });
   }
 

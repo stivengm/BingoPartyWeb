@@ -114,7 +114,7 @@ export class Lobby implements OnInit {
   }
 
   goToPlay() {
-
+    this.dataApp.goToPage('/game_curse');
   }
 
 }
