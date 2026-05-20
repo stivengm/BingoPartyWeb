@@ -1,0 +1,54 @@
+.timer_initial {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(var(--secondaryColorWeightRGB), .8);
+}
+
+.timer_text {
+    font-size: 140px;
+    font-weight: 800;
+    line-height: 1;
+
+    color: white;
+
+    text-shadow:
+        0 4px 12px rgba(0, 0, 0, .6);
+
+    animation: timerAnimation .8s ease forwards;
+}
+
+.timer_text.go {
+    color: var(--primaryColor);
+}
+
+@keyframes timerAnimation {
+
+    0% {
+        opacity: 0;
+        transform: scale(.2) rotate(-20deg);
+    }
+
+    40% {
+        opacity: 1;
+        transform: scale(1.4) rotate(12deg);
+    }
+
+    60% {
+        transform: scale(1.15) rotate(-8deg);
+    }
+
+    80% {
+        transform: scale(1.05) rotate(4deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}

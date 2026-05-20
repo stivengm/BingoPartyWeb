@@ -80,4 +80,20 @@ export class DataAppService {
         return this.$board.getValue();
     }
     //#endregion
+
+    //#region Evento para almacenar el valor inicial del countDown del inicio de la partida actual
+    private $isViewInitialGame = new BehaviorSubject<boolean>(true);
+
+    public setIsViewInitialGame(val: boolean): void {
+        this.$isViewInitialGame.next(val);
+    }
+
+    public getIsViewInitialGame(): Observable<boolean> {
+        return this.$isViewInitialGame.asObservable();
+    }
+
+    public getCurrentIsViewInitialGame(): boolean {
+        return this.$isViewInitialGame.getValue();
+    }
+    //#endregion
 }

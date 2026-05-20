@@ -1,14 +1,33 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Header } from '../../shared/layout/header/header';
 import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
+import { CountDownOverlayGame } from '../../shared/count-down-overlay-game/count-down-overlay-game';
+import { DataAppService } from '../../core/services/data-app.service';
 
 @Component({
   selector: 'app-game',
   imports: [
     Header,
-    TableroBingo
+    TableroBingo,
+    CountDownOverlayGame
   ],
   templateUrl: './game.html',
   styleUrl: './game.scss',
 })
-export class Game {}
+export class Game implements OnInit {
+
+  isViewInitialGame = true;
+
+  constructor(
+    private dataApp: DataAppService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.dataApp.getIsViewInitialGame().subscribe((value) => {
+      this.isViewInitialGame = value;
+      this.cdr.detectChanges();
+    });
+  }
+
+}

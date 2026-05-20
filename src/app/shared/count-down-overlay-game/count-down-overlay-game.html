@@ -1,0 +1,7 @@
+<div class="timer_initial">
+    @if (currentValue()) {
+        <div class="timer_text" [class.go]="currentValue() === '¡YA!'">
+            {{ currentValue() }}
+        </div>
+    }
+</div>

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Header } from '../../shared/layout/header/header';
 import { CommonModule, NgClass } from "@angular/common";
-import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
 import { DataAppService } from '../../core/services/data-app.service';
 import { errorModal } from '../../utils/modals';
 import { Room } from '../../core/models/room.model';
@@ -12,7 +11,6 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
   imports: [
     CommonModule,
     Header,
-    TableroBingo,
     ReactiveFormsModule,
     NgClass
 ],
