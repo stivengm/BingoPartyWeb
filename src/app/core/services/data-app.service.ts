@@ -37,7 +37,7 @@ export class DataAppService {
     //#region Evento para almacenar el alias de la persona
     private $player = new BehaviorSubject<Player | null>(null);
 
-    public setPlayer(val: Player): void {
+    public setPlayer(val: Player | null): void {
         this.$player.next(val);
         this.saveStorage('player', val);
     }
