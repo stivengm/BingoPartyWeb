@@ -4,6 +4,7 @@ import { Player } from "./player.model";
 export interface Room {
   id?: string;
   hostId?: string;
+  timer: number;
   players?: Player[];
   currentBall?: Ball;
   calledBalls?: Ball[];
