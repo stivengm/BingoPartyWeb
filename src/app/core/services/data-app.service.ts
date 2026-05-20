@@ -30,6 +30,10 @@ export class DataAppService {
         return JSON.parse(data) as T;
     }
 
+    public clearStorage() {
+        sessionStorage.clear();
+    }
+
     //#region Evento para almacenar el alias de la persona
     private $player = new BehaviorSubject<Player | null>(null);
 
