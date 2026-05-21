@@ -4,6 +4,7 @@ import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
 import { CountDownOverlayGame } from '../../shared/count-down-overlay-game/count-down-overlay-game';
 import { DataAppService } from '../../core/services/data-app.service';
 import { CircleCountDown } from '../../shared/circle-count-down/circle-count-down';
+import { Room } from '../../core/models/room.model';
 
 @Component({
   selector: 'app-game',
@@ -20,6 +21,10 @@ export class Game implements OnInit {
 
   isViewInitialGame = true;
 
+  timerChangeBall = 0;
+
+  room: Room = {} as Room;
+
   constructor(
     private dataApp: DataAppService,
     private cdr: ChangeDetectorRef
@@ -29,6 +34,24 @@ export class Game implements OnInit {
     this.dataApp.getIsViewInitialGame().subscribe((value) => {
       this.isViewInitialGame = value;
       this.cdr.detectChanges();
+    });
+
+    this.dataApp.getRoom().subscribe((room) => {
+      if (room != null) {
+        this.room = room;
+        this.timerChangeBall = this.room.timer;
+        return;
+      }
+
+      let romStorage = this.dataApp.getStorage('room') as Room;
+
+      if (romStorage === null) {
+        // TODO: Enviar al welcome porque no existe Room
+        return;
+      };
+      
+      this.room = romStorage;
+      this.dataApp.setRoom(romStorage);
     });
   }
 

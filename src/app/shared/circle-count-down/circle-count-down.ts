@@ -1,4 +1,5 @@
-import { Component, Input, signal, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, signal, SimpleChanges } from '@angular/core';
+import { DataAppService } from '../../core/services/data-app.service';
 
 @Component({
   selector: 'app-circle-count-down',
@@ -6,9 +7,10 @@ import { Component, Input, signal, SimpleChanges } from '@angular/core';
   templateUrl: './circle-count-down.html',
   styleUrl: './circle-count-down.scss',
 })
-export class CircleCountDown {
+export class CircleCountDown implements OnInit {
 
   @Input() seconds: number = 10;
+  isViewInfoBall = false;
 
   // Cambia este valor para reiniciar
   @Input() trigger: number = 0;
@@ -22,12 +24,17 @@ export class CircleCountDown {
   radius = 54;
   circumference = 2 * Math.PI * this.radius;
 
-  ngOnChanges(changes: SimpleChanges): void {
 
-    if (changes['trigger']) {
-      this.start();
-    }
+  constructor(private dataApp: DataAppService) {}
 
+  ngOnInit() {
+    this.dataApp.getIsViewInitialGame().subscribe((value) => {
+      this.isViewInfoBall = !value;
+
+      if (this.isViewInfoBall) {
+        this.start();
+      }
+    });
   }
 
   start(): void {

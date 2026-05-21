@@ -1,7 +1,9 @@
 <div class="section_timer_countdown">
-    <div class="time">
-        {{ timer() }}
-    </div>
+    @if (isViewInfoBall) {
+        <div class="time">
+            {{ timer() }}
+        </div>
+    }
 
     <div class="header_digital_mode">
         <div class="section_digital_mode">
@@ -25,8 +27,10 @@
                 [style.stroke-dashoffset]="getStrokeOffset()"/>
         </svg>
         <div class="ball_information">
-            <h3 class="letter_ball">B</h3>
-            <h1 class="number_ball">12</h1>
+            @if (isViewInfoBall) {
+                <h3 class="letter_ball">B</h3>
+                <h1 class="number_ball">12</h1>
+            }
         </div>
     </div>
 </div>
