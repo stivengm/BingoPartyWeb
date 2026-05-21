@@ -57,3 +57,13 @@
     border: 5px solid rgb(202, 153, 6) !important;
     background-color: rgb(243, 212, 118) !important;
 }
+
+@media screen and (max-width: 450px) {
+    .board {
+        .board_letters {
+            .board_letter {
+                font-size: 50px;
+            }
+        }
+    }
+}
