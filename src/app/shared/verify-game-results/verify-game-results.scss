@@ -1,0 +1,76 @@
+.content_modal_verify_game_results {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    z-index: 20;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: rgba(var(--secondaryColorWeightRGB), .8);
+    .modal_verify {
+        background-color: var(--whiteColor);-webkit-box-shadow: 0px 6px 16px 1px rgba(0,0,0,0.73); 
+        box-shadow: 0px 6px 16px 1px rgba(0,0,0,0.73);
+        border-radius: 16px;
+        .header_modal_verify {
+            padding: 13px 10px;
+            border-radius: 14px 14px 0 0;
+            text-align: center;
+            background-color: var(--secondaryColor);
+            color: var(--whiteColor);
+            .title_verify {
+                margin: 0;
+            }
+        }
+        .content_modal_verify {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            .header_section_verify_game {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                // img 
+                .title_header_section_verify_game {
+                    margin: 0;
+                    color: var(--colorTitles);
+                    font-size: 24px;
+                    font-weight: 600;
+                }
+            }
+            .balls_completeds {
+                width: 100%;
+                background-color: var(--bgKeyboard);
+                border: 1px solid rgba(var(--borderBoardVerify), .3);
+                display: grid;
+                gap: 6px;
+                padding: 12px;
+                box-sizing: border-box;
+                border-radius: 12px;
+                grid-template-columns: repeat(10, 1fr);
+                .ball {
+                    aspect-ratio: 1 / 1;
+                    background-color: var(--whiteColor);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 100%;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: var(--colorText);
+                    
+                    border: 1px solid rgba(var(--borderBoardVerify), .2);
+                }
+                .selected {
+                    background: #8333C6;
+                    background: linear-gradient(140deg,rgba(131, 51, 198, 1) 10%, rgba(65, 0, 111, 1) 100%);
+                    border: 1px solid rgba(var(--borderBoardVerify), .4);
+                    color: var(--whiteColor);
+                }
+            }
+            .board_player {
+                border: 2px solid rgba(var(--borderBoardTarjetonVerify), 1);
+            }
+        }
+    }
+}

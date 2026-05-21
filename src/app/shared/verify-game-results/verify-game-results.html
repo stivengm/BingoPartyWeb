@@ -1,0 +1,31 @@
+<div class="content_modal_verify_game_results">
+    <div class="modal_verify">
+        <div class="header_modal_verify">
+            <h1 class="title_verify">¡VERIFICANDO TARJETÓN DE {{ player.name }}!</h1>
+        </div>
+
+        <div class="content_modal_verify">
+            <div class="header_section_verify_game">
+                <img src="assets/icons/clock.svg" alt="Icono de reloj">
+                <p class="title_header_section_verify_game">Bolitas sorteados</p>
+            </div>
+    
+            <div class="balls_completeds">
+                @for (ball of allBalls; track $index) {
+                    <div class="ball" [ngClass]="{'selected': ball.isComplete }">{{ ball.id }}</div>
+                }
+            </div>
+            <div class="header_section_verify_game">
+                <img src="assets/icons/board.svg" alt="Icono de reloj">
+                <p class="title_header_section_verify_game">Tarjetón del jugador</p>
+            </div>
+            <!-- <div class="board_player">
+                <div></div>
+                @for (item of boardVerify; track $index) {
+
+                }
+            </div> -->
+        </div>
+
+    </div>
+</div>

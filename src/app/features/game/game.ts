@@ -5,6 +5,7 @@ import { CountDownOverlayGame } from '../../shared/count-down-overlay-game/count
 import { DataAppService } from '../../core/services/data-app.service';
 import { CircleCountDown } from '../../shared/circle-count-down/circle-count-down';
 import { Room } from '../../core/models/room.model';
+import { VerifyGameResults } from '../../shared/verify-game-results/verify-game-results';
 
 @Component({
   selector: 'app-game',
@@ -12,7 +13,8 @@ import { Room } from '../../core/models/room.model';
     Header,
     TableroBingo,
     CountDownOverlayGame,
-    CircleCountDown
+    CircleCountDown,
+    VerifyGameResults
   ],
   templateUrl: './game.html',
   styleUrl: './game.scss',
