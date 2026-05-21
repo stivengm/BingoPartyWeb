@@ -25,6 +25,8 @@ export class Game implements OnInit {
 
   timerChangeBall = 0;
 
+  isValidateBoard = false;
+
   room: Room = {} as Room;
 
   constructor(
@@ -55,6 +57,10 @@ export class Game implements OnInit {
       this.room = romStorage;
       this.dataApp.setRoom(romStorage);
     });
+  }
+
+  validateBoard() {
+    this.isValidateBoard = true;
   }
 
 }

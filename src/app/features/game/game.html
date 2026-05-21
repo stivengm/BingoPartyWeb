@@ -8,16 +8,17 @@
     </div>
 
     <div class="sections_actions">
-        <button class="btn primary_button">¡Cantar Bingo!</button>
+        <button class="btn primary_button" (click)="validateBoard()">¡Cantar Bingo!</button>
     </div>
 </div>
 
-<!-- @if (isViewInitialGame) {
+@if (isViewInitialGame) {
     <div class="initial_timer_load">
         <app-count-down-overlay-game></app-count-down-overlay-game>
     </div>
-} -->
+}
 
 
-
-<app-verify-game-results></app-verify-game-results>
+@if (isValidateBoard) {
+    <app-verify-game-results></app-verify-game-results>
+}
