@@ -8,25 +8,6 @@ import { Player } from '../../core/models/player.model';
 import { BingoCell } from '../../core/models/bingo_cell.model';
 import { VerifyBall, VerifyCell } from '../../core/models/verify_cell.model';
 
-// type VerifyStatus =
-//   | 'pending'
-//   | 'success'
-//   | 'error'
-//   | 'active-success'
-//   | 'active-error';
-
-// interface VerifyBall {
-//   id: number;
-//   isComplete: boolean;
-//   status: VerifyStatus;
-// }
-
-// interface VerifyCell {
-//   number: number;
-//   isDrawn: boolean;
-//   status: VerifyStatus;
-// }
-
 @Component({
   selector: 'app-verify-game-results',
   imports: [
@@ -42,6 +23,8 @@ export class VerifyGameResults implements OnInit {
   board: BingoCell[][] = [];
 
   boardVerify: VerifyCell[][] = [];
+  isFinishedValidation = false;
+  isValidBoard: boolean | null = null;
 
   allBalls: VerifyBall[] = [
     { id: 1, isComplete: true, status: 'pending' },
@@ -194,15 +177,20 @@ export class VerifyGameResults implements OnInit {
   }
 
   async startVerification(): Promise<void> {
+    let hasErrors = false;
     for (const row of this.boardVerify) {
       for (const cell of row) {
         const ball = this.allBalls.find(
           x => x.id === cell.number
         );
         const success = cell.isDrawn;
+        if (!success) {
+          hasErrors = true;
+        }
         cell.status = success
           ? 'active-success'
           : 'active-error';
+
         if (ball) {
           ball.status = success
             ? 'active-success'
@@ -223,6 +211,10 @@ export class VerifyGameResults implements OnInit {
         this.cdr.detectChanges();
       }
     }
+
+    this.isValidBoard = !hasErrors;
+    this.isFinishedValidation = true;
+    this.cdr.detectChanges();
   }
 
   sleep(ms: number): Promise<void> {

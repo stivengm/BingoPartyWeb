@@ -52,17 +52,19 @@
                     }
                 }
             </div>
-
-            <div class="actions_verify_board">
-
-                <p>Validando las bolillas con el sistema central, validando número 18.</p>
-
-                <!-- @if () { -->
-                    <button class="btn primary_button">¡Bingo confirmado!</button>
-                    <button class="btn primary_button">¡Bingo incompleto!</button>
-                <!-- } -->
-
-            </div>
         </div>
+        @if (isFinishedValidation) {
+            <div class="actions_verify_board">
+                @if (isValidBoard) {
+                    <button class="btn primary_button">
+                        ¡Bingo confirmado!
+                    </button>
+                } @else {
+                    <button class="btn primary_button danger_button">
+                        ¡Bingo incompleto!
+                    </button>
+                }
+            </div>
+        }
     </div>
 </div>
