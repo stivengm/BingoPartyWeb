@@ -7,6 +7,7 @@
     padding: 20px;
     box-sizing: border-box;
     background-color: rgba(var(--secondaryColorWeightRGB), .8);
+    overflow-y: scroll;
     .modal_verify {
         background-color: var(--whiteColor);-webkit-box-shadow: 0px 6px 16px 1px rgba(0,0,0,0.73); 
         box-shadow: 0px 6px 16px 1px rgba(0,0,0,0.73);
