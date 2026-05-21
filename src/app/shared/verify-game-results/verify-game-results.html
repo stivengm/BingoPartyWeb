@@ -11,33 +11,23 @@
             </div>
     
             <div class="balls_completeds">
-
                 @for (ball of allBalls; track $index) {
-
                     <div
                         class="ball"
-                        [ngClass]="{
-                            'selected': ball.isComplete
-                        }"
-                    >
-
-                        @if (ball.isComplete) {
-
+                        [ngClass]="[
+                            ball.status,
+                            ball.isComplete ? 'selected' : ''
+                        ]">
+                        @if (ball.status === 'success') {
                             <img
                                 src="assets/icons/check.svg"
                                 alt="Check"
                             >
-
                         } @else {
-
                             {{ ball.id }}
-
                         }
-
                     </div>
-
                 }
-
             </div>
             <div class="header_section_verify_game">
                 <img src="assets/icons/board.svg" alt="Icono de reloj">
@@ -45,35 +35,23 @@
             </div>
             <div class="board_player">
                 @for (row of boardVerify; track $index) {
-
                     @for (cell of row; track $index) {
-
                         <div
                             class="cell_board"
                             [ngClass]="cell.status"
                         >
-
                             @if (cell.status === 'success') {
-
                                 <img
                                     src="assets/icons/check.svg"
                                     alt="Check"
                                 >
-
                             } @else {
-
                                 {{ cell.number }}
-
                             }
-
                         </div>
-
                     }
-
                 }
-
             </div>
         </div>
-
     </div>
 </div>
