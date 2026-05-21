@@ -33,6 +33,10 @@ export class CircleCountDown implements OnInit {
 
       if (this.isViewInfoBall) {
         this.start();
+
+        setInterval(() => {
+          this.start();
+        }, 10500);
       }
     });
   }
