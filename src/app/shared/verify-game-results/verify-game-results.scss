@@ -74,3 +74,130 @@
         }
     }
 }
+
+
+
+
+.board_player {
+
+    display: grid;
+
+    grid-template-columns: repeat(5, 1fr);
+
+    gap: 10px;
+
+    padding: 14px;
+
+    border-radius: 16px;
+
+    background-color: var(--bgKeyboard);
+
+    border: 2px solid rgba(var(--borderBoardTarjetonVerify), 1);
+
+    .cell_board {
+
+        aspect-ratio: 1 / 1;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+
+        background-color: var(--whiteColor);
+
+        font-size: 20px;
+        font-weight: 700;
+
+        color: var(--colorText);
+
+        border: 1px solid rgba(var(--borderBoardVerify), .2);
+
+        transition:
+            .2s ease,
+            transform .2s ease;
+
+        transform: scale(1);
+
+        img {
+            width: 24px;
+            height: 24px;
+        }
+
+        &.pending {
+            background-color: var(--whiteColor);
+        }
+
+        &.success {
+
+            background:
+                linear-gradient(
+                    140deg,
+                    rgba(255, 214, 0, 1) 10%,
+                    rgba(255, 174, 0, 1) 100%
+                );
+
+            color: #000;
+
+            transform: scale(1.08);
+
+            box-shadow:
+                0 0 18px rgba(255, 214, 0, .8);
+
+        }
+
+        &.error {
+
+            background:
+                linear-gradient(
+                    140deg,
+                    rgba(255, 82, 82, 1) 10%,
+                    rgba(183, 28, 28, 1) 100%
+                );
+
+            color: white;
+
+            transform: scale(1.08);
+
+            box-shadow:
+                0 0 18px rgba(255, 82, 82, .7);
+
+        }
+
+    }
+
+}
+
+
+.ball {
+
+    transition:
+        .2s ease,
+        transform .2s ease;
+
+    img {
+        width: 14px;
+        height: 14px;
+    }
+
+}
+
+.selected {
+
+    background:
+        linear-gradient(
+            140deg,
+            rgba(131, 51, 198, 1) 10%,
+            rgba(65, 0, 111, 1) 100%
+        );
+
+    border: 1px solid rgba(var(--borderBoardVerify), .4);
+
+    color: var(--whiteColor);
+
+    transform: scale(1.05);
+
+    box-shadow:
+        0 0 12px rgba(131, 51, 198, .6);
+
+}
