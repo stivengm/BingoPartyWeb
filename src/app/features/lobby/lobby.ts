@@ -7,6 +7,7 @@ import { RoomModel } from '../../core/models/room.model';
 import { BingoCell } from '../../core/models/bingo_cell.model';
 import { RoomService } from '../../core/services/room.service';
 import { CommonModule } from '@angular/common';
+import { errorModal } from '../../utils/modals';
 
 @Component({
   selector: 'app-lobby',
@@ -78,6 +79,7 @@ export class Lobby implements OnInit {
 
     this.generateBingoBoard();
     this.getPlayersRoom();
+    this.getRoomInLobby();
   }
 
   getPlayersRoom() {
@@ -143,8 +145,27 @@ export class Lobby implements OnInit {
     return numbers;
   }
 
+  getRoomInLobby() {
+    this.roomService.getRoomInLobby(this.room.id).subscribe((room: any) => {
+      this.room = room;
+      if (room.status === 'playing') {
+        console.log('El juego inició');
+        this.dataApp.goToPage('/game_curse');
+      }
+    });
+  }
+
   goToPlay() {
-    this.dataApp.goToPage('/game_curse');
+    let playRoom = {
+      roomId: this.room.id,
+      playerId: this.player.id,
+      status: "playing"
+    }
+    this.roomService.updateRoom(playRoom).subscribe((isUpdate) => {
+      if (isUpdate.code != "UR001") {
+        errorModal({ title: isUpdate.message ?? "Ha ocurrido un error"});
+      }
+    });
   }
 
 }

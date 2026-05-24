@@ -87,7 +87,6 @@ export class LoginRoom implements OnInit {
     }
 
     this.roomService.joinRoom(joinRoom).subscribe((joinRoom) => {
-      debugger;
       if (joinRoom.code != "JR001") {
         errorModal({ title: joinRoom.message ?? "Ha ocurrido un error"});
         return;

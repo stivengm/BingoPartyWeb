@@ -31,6 +31,19 @@ export class RoomService {
         return this.http.post<ResponseServicesModel<RoomModel>>(`${environment.apiUrl}/rooms/join`, room);
     }
 
+    updateRoom(updateRoom: any): Observable<ResponseServicesModel<RoomModel>> {
+        return this.http.post<ResponseServicesModel<RoomModel>>(`${environment.apiUrl}/rooms/update`, updateRoom);
+    }
+
+    getRoomInLobby(roomCode: string): Observable<any> {
+        const roomRef = ref(
+            this.db,
+            `rooms/${roomCode}`
+        );
+
+        return objectVal(roomRef) as Observable<any>;
+    }
+
     getPlayers(roomCode: string): Observable<Player[]> {
         const playersRef = ref(
         this.db,
