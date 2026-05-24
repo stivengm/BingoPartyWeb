@@ -29,6 +29,9 @@ export class CircleCountDown implements OnInit {
   room: RoomModel = {} as RoomModel;
   currentBall: any = null; 
 
+
+  lastThreeBalls: any[] = [];
+
   constructor(
     private dataApp: DataAppService,
     private roomService: RoomService
@@ -38,6 +41,7 @@ export class CircleCountDown implements OnInit {
     this.dataApp.getRoom().subscribe((room) => {
       if (room != null) {
         this.room = room;
+        this.getCalledBalls(this.room.id);
         this.getCurrentBall(this.room.id);
         return;
       }
@@ -85,6 +89,18 @@ export class CircleCountDown implements OnInit {
 
   getStrokeOffset(): number {
     return this.circumference - (this.progress() / 100) * this.circumference;
+  }
+
+  getCalledBalls(roomId: string) {
+    this.roomService.getCalledBalls(roomId).subscribe((balls: any[]) => {
+      if (!balls) {
+        this.lastThreeBalls = [];
+        return;
+      }
+      
+      this.lastThreeBalls = balls.slice(-3).reverse();
+      console.log(this.lastThreeBalls);
+    });
   }
 
   getCurrentBall(roomId: string) {

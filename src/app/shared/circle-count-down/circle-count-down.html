@@ -33,4 +33,12 @@
             }
         </div>
     </div>
+
+    <div class="historyCalledBalls">
+        @for (lastBall of lastThreeBalls; track $index) {
+            <div class="last_ball">
+                <p class="last_ball_info">{{ lastBall.letter }}-{{ lastBall.number }}</p>
+            </div>
+        }
+    </div>
 </div>

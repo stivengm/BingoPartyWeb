@@ -75,4 +75,24 @@
             }
         }
     }
+    .historyCalledBalls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        width: 100%;
+        .last_ball {
+            width: 40px;
+            height: 40px;
+            border-radius: 100%;
+            border: 1px solid rgba(var(--borderBoardVerify), 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bgKeyboard);
+            .last_ball_info {
+                margin: 0;
+                color: var(--colorTitles);
+            }
+        }
+    }
 }

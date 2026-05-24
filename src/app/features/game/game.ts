@@ -11,6 +11,7 @@ import { Player } from '../../core/models/player.model';
 import { JoinRoomModel } from '../../core/models/join_room.model';
 import { GenerateBallModel } from '../../core/models/generate_ball.model';
 import { statusGameEnum } from '../../core/models/status_game.model';
+import { errorModal } from '../../utils/modals';
 
 @Component({
   selector: 'app-game',
@@ -63,7 +64,10 @@ export class Game implements OnInit {
 
         const generate = () => {
           this.roomService.generateBallService(generateBall).subscribe((isGenerateBall) => {
-            console.log(isGenerateBall);
+            if (isGenerateBall.code != "GB001") {
+              errorModal({ title: isGenerateBall.message });
+              return;
+            }
           });
         };
 
