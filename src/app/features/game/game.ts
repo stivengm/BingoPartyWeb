@@ -6,6 +6,11 @@ import { DataAppService } from '../../core/services/data-app.service';
 import { CircleCountDown } from '../../shared/circle-count-down/circle-count-down';
 import { RoomModel } from '../../core/models/room.model';
 import { VerifyGameResults } from '../../shared/verify-game-results/verify-game-results';
+import { RoomService } from '../../core/services/room.service';
+import { Player } from '../../core/models/player.model';
+import { JoinRoomModel } from '../../core/models/join_room.model';
+import { GenerateBallModel } from '../../core/models/generate_ball.model';
+import { statusGameEnum } from '../../core/models/status_game.model';
 
 @Component({
   selector: 'app-game',
@@ -22,6 +27,9 @@ import { VerifyGameResults } from '../../shared/verify-game-results/verify-game-
 export class Game implements OnInit {
 
   isViewInitialGame = true;
+  player: Player = {} as Player;
+
+  statusGame = "";
 
   timerChangeBall = 0;
 
@@ -31,13 +39,40 @@ export class Game implements OnInit {
 
   constructor(
     private dataApp: DataAppService,
+    private roomService: RoomService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.dataApp.getIsViewInitialGame().subscribe((value) => {
       this.isViewInitialGame = value;
+      // Juego iniciado por primera vez
+      if (!this.isViewInitialGame) {
+        this.dataApp.setStatusGame(statusGameEnum.Playing);
+      }
       this.cdr.detectChanges();
+    });
+
+    this.dataApp.getStatusGame().subscribe((val) => {
+      this.statusGame = val;
+      if (this.player.isHost && val === statusGameEnum.Playing) {
+        const generateBall: GenerateBallModel = {
+          roomId: this.room.id,
+          playerId: this.player.id
+        };
+
+        const generate = () => {
+          this.roomService.generateBallService(generateBall).subscribe((isGenerateBall) => {
+            console.log(isGenerateBall);
+          });
+        };
+
+        generate();
+
+        setInterval(() => {
+          generate();
+        }, (this.timerChangeBall + 0.5) * 1000);
+      }
     });
 
     this.dataApp.getRoom().subscribe((room) => {
@@ -57,6 +92,24 @@ export class Game implements OnInit {
       this.room = romStorage;
       this.dataApp.setRoom(romStorage);
     });
+
+    this.dataApp.getPlayer().subscribe((player: Player) => {
+      if (player != null) {
+        this.player = player;
+        return;
+      }
+
+      let playerStorage = this.dataApp.getStorage('player') as Player;
+
+      if (playerStorage === null) {
+        // TODO: Enviar al welcome porque no existe player
+        return;
+      };
+      
+      this.player = playerStorage;
+      this.dataApp.setPlayer(playerStorage);
+    });
+
   }
 
   validateBoard() {

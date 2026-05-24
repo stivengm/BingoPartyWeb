@@ -36,7 +36,7 @@ export class CircleCountDown implements OnInit {
 
         setInterval(() => {
           this.start();
-        }, 10500);
+        }, (this.seconds + 0.5) * 1000);
       }
     });
   }

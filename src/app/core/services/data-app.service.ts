@@ -117,4 +117,21 @@ export class DataAppService {
         return this.$isViewInitialGame.getValue();
     }
     //#endregion
+
+
+    //#region Evento para almacenar el valor inicial del countDown del inicio de la partida actual
+    private $statusGame = new BehaviorSubject<string>("waiting");
+
+    public setStatusGame(val: string): void {
+        this.$statusGame.next(val);
+    }
+
+    public getStatusGame(): Observable<string> {
+        return this.$statusGame.asObservable();
+    }
+
+    public getCurrentStatusGame(): string {
+        return this.$statusGame.getValue();
+    }
+    //#endregion
 }

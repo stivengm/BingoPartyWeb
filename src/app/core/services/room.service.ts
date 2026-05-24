@@ -10,6 +10,7 @@ import { Player } from '../models/player.model';
 import { JoinRoomModel } from '../models/join_room.model';
 
 import { objectVal, ref, Database } from '@angular/fire/database';
+import { GenerateBallModel } from '../models/generate_ball.model';
 
 @Injectable({
   providedIn: 'root'
@@ -60,5 +61,34 @@ export class RoomService {
 
             })
         ) as Observable<Player[]>;
+    }
+
+    generateBallService(infoHostGenerateBall: GenerateBallModel) {
+        return this.http.post<ResponseServicesModel<RoomModel>>(`${environment.apiUrl}/rooms/generateBall`, infoHostGenerateBall);
+    }
+
+    getCurrentBall(roomCode: string) {
+        const ballRef = ref(
+            this.db,
+            `rooms/${roomCode}/currentBall`
+        );
+
+        return objectVal(ballRef);
+    }
+
+    getCalledBalls(roomCode: string) {
+        const calledBallsRef = ref(
+            this.db,
+            `rooms/${roomCode}/calledBalls`
+        );
+
+        return objectVal(calledBallsRef).pipe(
+            map((balls: any) => {
+                if (!balls) {
+                    return [];
+                }
+                return Object.values(balls);
+            })
+        );
     }
 }
