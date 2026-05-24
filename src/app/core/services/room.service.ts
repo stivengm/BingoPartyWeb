@@ -6,8 +6,9 @@ import { CreateRoomModel } from '../models/create_room.model';
 import { ResponseServicesModel } from '../models/response_services.model';
 import { RoomModel } from '../models/room.model';
 import { map, Observable } from 'rxjs';
-
 import { Player } from '../models/player.model';
+import { JoinRoomModel } from '../models/join_room.model';
+
 import { objectVal, ref, Database } from '@angular/fire/database';
 
 @Injectable({
@@ -24,6 +25,10 @@ export class RoomService {
 
     createRoom(room: CreateRoomModel): Observable<ResponseServicesModel<RoomModel>> {
         return this.http.post<ResponseServicesModel<RoomModel>>(`${environment.apiUrl}/rooms/create`, room);
+    }
+
+    joinRoom(room: JoinRoomModel): Observable<ResponseServicesModel<RoomModel>> {
+        return this.http.post<ResponseServicesModel<RoomModel>>(`${environment.apiUrl}/rooms/join`, room);
     }
 
     getPlayers(roomCode: string): Observable<Player[]> {

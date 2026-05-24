@@ -4,6 +4,8 @@ import { Player } from '../../core/models/player.model';
 import { DataAppService } from '../../core/services/data-app.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { RoomService } from '../../core/services/room.service';
+import { JoinRoomModel } from '../../core/models/join_room.model';
 
 @Component({
   selector: 'app-login-room',
@@ -15,7 +17,7 @@ import { Router } from '@angular/router';
   styleUrl: './login-room.scss',
 })
 export class LoginRoom implements OnInit {
-  player: Player | null = null;
+  player: Player = {} as Player;
   public roomControl = new FormControl('');
 
   public keys: string[] = [
@@ -28,15 +30,31 @@ export class LoginRoom implements OnInit {
 
   constructor(
     private dataApp: DataAppService,
-    private router: Router
+    private roomService: RoomService
   ) {
 
   }
 
   ngOnInit() {
+    this.getPlayer();
+  }
+
+  getPlayer() {
     this.dataApp.getPlayer().subscribe((player) => {
-      this.player = player;
-      console.log(player);
+      if (player != null) {
+        this.player = player;
+        return;
+      }
+
+      let playerStorage = this.dataApp.getStorage('player') as Player;
+
+      if (playerStorage === null) {
+        // TODO: Enviar al welcome porque no existe player
+        return;
+      };
+      
+      this.player = playerStorage;
+      this.dataApp.setPlayer(playerStorage);
     });
   }
 
@@ -58,12 +76,19 @@ export class LoginRoom implements OnInit {
         );
         break;
     }
-
-    console.log(this.roomControl.value);
   }
 
   joinRoom() {
-    this.dataApp.goToPage("/lobby");
+    let joinRoom: JoinRoomModel = {
+      roomId: this.roomControl.value ?? "",
+      playerName: this.player.name
+    }
+
+    this.roomService.joinRoom(joinRoom).subscribe((joinRoom) => {
+      debugger;
+
+      this.dataApp.goToPage("/lobby");
+    });
   }
 
 }
