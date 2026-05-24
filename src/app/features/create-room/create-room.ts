@@ -88,14 +88,12 @@ export class CreateRoom {
       return;
     }
 
-    debugger;
+    // this.room!.id = this.idRoom;
+    // this.room!.hostId = this.idRoom;
+    // this.room!.status = 'waiting';
+    // this.room!.timer = parseInt(this.timer.value!.toString()) ?? 10;
 
-    this.room!.id = this.idRoom;
-    this.room!.hostId = this.idRoom;
-    this.room!.status = 'waiting';
-    this.room!.timer = parseInt(this.timer.value!.toString()) ?? 10;
-
-    this.dataApp.setRoom(this.room!);
+    // this.dataApp.setRoom(this.room!);
 
     let createRoom: CreateRoomModel = {
       hostName: this.player.name,
@@ -106,11 +104,15 @@ export class CreateRoom {
 
     this.roomService.createRoom(createRoom).subscribe((respCreateRoom: ResponseServicesModel<RoomModel>) => {
       console.log(respCreateRoom);
+      debugger;
       
       if (respCreateRoom.code != "CR001") {
         errorModal({ title: respCreateRoom.message ?? "Ha ocurrido un error"});
         return;
       }
+
+      this.room = respCreateRoom.data;
+      this.dataApp.setRoom(this.room!);
 
       this.dataApp.goToPage("/lobby");
     });
@@ -118,7 +120,7 @@ export class CreateRoom {
 
   selectedGameType(id: number) {
     this.idGameType = id;
-    this.room!.mode = id === 1 ? 'automatic' : 'manual';
+    // this.room!.mode = id === 1 ? 'automatic' : 'manual';
   }
 
   selectedBoardType(id: number) {

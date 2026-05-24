@@ -44,23 +44,6 @@
             }
         }
     }
-    .section_actual_lobby {
-        background-color: var(--bgActualRoom);
-        border-radius: 12px;
-        padding: 24px;
-        .actual_room {
-            margin: 0;
-            font-size: 16px;
-            text-transform: uppercase;
-            color: var(--colorTextSecondaryWeight);
-        }
-        .room_id {
-            margin: 0;
-            font-size: 48px;
-            color: var(--colorTextSecondaryWeight);
-        }
-    }
-
     .section_tarjeton_card_asigned {
         padding: 16px;
         border-radius: 12px;
