@@ -9,6 +9,7 @@ import { RoomService } from '../../core/services/room.service';
 import { CommonModule } from '@angular/common';
 import { errorModal } from '../../utils/modals';
 import { statusGameEnum } from '../../core/models/status_game.model';
+import { UpdateGameModel } from '../../core/models/update_game.model';
 
 @Component({
   selector: 'app-lobby',
@@ -146,7 +147,7 @@ export class Lobby implements OnInit {
   }
 
   getRoomInLobby() {
-    this.roomService.getRoomInLobby(this.room.id).subscribe((room: any) => {
+    this.roomService.getRoomSuscription(this.room.id).subscribe((room: any) => {
       this.room = room;
       if (room != null && room.status === statusGameEnum.Playing) {
         console.log('El juego inició');
@@ -156,10 +157,10 @@ export class Lobby implements OnInit {
   }
 
   goToPlay() {
-    let playRoom = {
+    let playRoom: UpdateGameModel = {
       roomId: this.room.id,
       playerId: this.player.id,
-      status: "playing"
+      status: statusGameEnum.Playing
     }
     this.roomService.updateRoom(playRoom).subscribe((isUpdate) => {
       if (isUpdate.code != "UR001") {

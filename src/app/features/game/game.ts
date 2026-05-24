@@ -12,6 +12,7 @@ import { JoinRoomModel } from '../../core/models/join_room.model';
 import { GenerateBallModel } from '../../core/models/generate_ball.model';
 import { statusGameEnum } from '../../core/models/status_game.model';
 import { errorModal } from '../../utils/modals';
+import { UpdateGameModel } from '../../core/models/update_game.model';
 
 @Component({
   selector: 'app-game',
@@ -114,10 +115,34 @@ export class Game implements OnInit {
       this.dataApp.setPlayer(playerStorage);
     });
 
+    this.getRoomInGame();
+  }
+
+  getRoomInGame() {
+    this.roomService.getRoomSuscription(this.room.id).subscribe((updateRoom) => {
+
+      if (updateRoom != null && updateRoom.status === statusGameEnum.Paused) {
+        debugger;
+        console.log("El juego se pausó.");
+        this.isValidateBoard = true;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   validateBoard() {
-    this.isValidateBoard = true;
+    let pauseRoom: UpdateGameModel = {
+      roomId: this.room.id,
+      playerId: this.player.id,
+      status: statusGameEnum.Paused
+    }
+
+    // Pausar juego
+    this.roomService.updateRoom(pauseRoom).subscribe((isPauseGame) => {
+
+      debugger;
+      console.log(isPauseGame);
+    });
   }
 
 }

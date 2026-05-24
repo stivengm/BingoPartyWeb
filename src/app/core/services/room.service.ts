@@ -36,7 +36,7 @@ export class RoomService {
         return this.http.post<ResponseServicesModel<RoomModel>>(`${environment.apiUrl}/rooms/update`, updateRoom);
     }
 
-    getRoomInLobby(roomCode: string): Observable<any> {
+    getRoomSuscription(roomCode: string): Observable<any> {
         const roomRef = ref(
             this.db,
             `rooms/${roomCode}`
