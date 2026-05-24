@@ -11,7 +11,7 @@ export interface RoomModel {
   // players
   secondsBalls: number;
   status: 'waiting' | 'playing' | 'finished';
-
+  player: Player;
 
 
 

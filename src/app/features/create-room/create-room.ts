@@ -103,6 +103,7 @@ export class CreateRoom {
         return;
       }
 
+      this.dataApp.setPlayer(respCreateRoom.data.host);
       this.room = respCreateRoom.data;
       this.dataApp.setRoom(this.room!);
       this.dataApp.setIsLoader(false);

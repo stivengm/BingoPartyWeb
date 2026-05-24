@@ -3,7 +3,6 @@ import { Header } from '../../shared/layout/header/header';
 import { Player } from '../../core/models/player.model';
 import { DataAppService } from '../../core/services/data-app.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { RoomService } from '../../core/services/room.service';
 import { JoinRoomModel } from '../../core/models/join_room.model';
 import { errorModal } from '../../utils/modals';
@@ -94,6 +93,7 @@ export class LoginRoom implements OnInit {
         return;
       }
 
+      this.dataApp.setPlayer(joinRoom.data.player);
       this.room = joinRoom.data;
       this.dataApp.setRoom(this.room!);
       this.dataApp.setIsLoader(false);

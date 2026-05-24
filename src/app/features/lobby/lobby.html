@@ -29,10 +29,10 @@
         </div>
 
         <div class="section_all_players_online">
-            @for (player of playersOnline; track $index) {
-                <div class="player_account">
+            @for (playerOnline of playersOnline; track $index) {
+                <div class="player_account" [ngClass]="{'plater': playerOnline.id == player.id }">
                     <div class="img_profile"></div>
-                    <p class="player_name">{{ player.name }}</p>
+                    <p class="player_name">{{ playerOnline.id == player.id ? 'Tú' : playerOnline.name }}</p>
                 </div>
             }
         </div>

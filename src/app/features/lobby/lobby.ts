@@ -6,13 +6,15 @@ import { Player } from '../../core/models/player.model';
 import { RoomModel } from '../../core/models/room.model';
 import { BingoCell } from '../../core/models/bingo_cell.model';
 import { RoomService } from '../../core/services/room.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-lobby',
   imports: [
     Header,
-    TableroBingo
-  ],
+    TableroBingo,
+    CommonModule
+],
   templateUrl: './lobby.html',
   styleUrl: './lobby.scss',
 })
@@ -79,22 +81,24 @@ export class Lobby implements OnInit {
   }
 
   getPlayersRoom() {
-    this.room;
-    this.roomService.getPlayers(this.room.id).subscribe((players: any) => {
-      // TODO: Agregar los usuarios activos.
-      debugger;
 
-      console.log(players);
+  this.roomService.getPlayers(this.room.id).subscribe((players: any[]) => {
+    if (this.player?.id) {
+      players.sort((a, b) => {
+        if (a.id === this.player.id) {
+          return -1;
+        }
 
-      this.playersOnline = players;
-
-
-      JSON.stringify(this.playersOnline);
-
-      this.cdr.detectChanges();
-      
-    });
-  }
+        if (b.id === this.player.id) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+    this.playersOnline = players;
+    this.cdr.detectChanges();
+  });
+}
 
   generateBingoBoard() {
     const columnas = [

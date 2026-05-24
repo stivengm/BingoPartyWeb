@@ -80,17 +80,19 @@
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
-            // grid-template-columns: repeat(3, 1fr);
             .player_account {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 width: 70px;
+                gap: 10px;
                 .img_profile {
                     width: 64px;
                     height: 64px;
                     background-color: red;
                     border-radius: 100%;
+                    -webkit-box-shadow: 0px 0px 0px 4px rgba(var(--secondaryColorWeightRGB), .1); 
+                    box-shadow: 0px 0px 0px 4px rgba(var(--secondaryColorWeightRGB), .1);
                 }
                 .player_name {
                     width: 100%;
@@ -103,6 +105,12 @@
                     -webkit-box-orient: vertical;
                     text-overflow: ellipsis;
                     word-break: break-word;
+                }
+            }
+            .plater {
+                .img_profile {
+                    -webkit-box-shadow: 0px 0px 0px 6px rgba(var(--primaryColorLight), .45); 
+                    box-shadow: 0px 0px 0px 6px rgba(var(--primaryColorLight), .45);
                 }
             }
         }
@@ -125,8 +133,13 @@
         }
     }
     .section_waiting_host {
+        position: fixed;
+        width: 100%;
+        left: 0;
+        bottom: 20px;
         display: flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
         .message_waiting_host {
             display: flex;
