@@ -88,12 +88,7 @@ export class CreateRoom {
       return;
     }
 
-    // this.room!.id = this.idRoom;
-    // this.room!.hostId = this.idRoom;
-    // this.room!.status = 'waiting';
-    // this.room!.timer = parseInt(this.timer.value!.toString()) ?? 10;
-
-    // this.dataApp.setRoom(this.room!);
+    this.dataApp.setIsLoader(true);
 
     let createRoom: CreateRoomModel = {
       hostName: this.player.name,
@@ -103,9 +98,6 @@ export class CreateRoom {
     }
 
     this.roomService.createRoom(createRoom).subscribe((respCreateRoom: ResponseServicesModel<RoomModel>) => {
-      console.log(respCreateRoom);
-      debugger;
-      
       if (respCreateRoom.code != "CR001") {
         errorModal({ title: respCreateRoom.message ?? "Ha ocurrido un error"});
         return;
@@ -113,6 +105,7 @@ export class CreateRoom {
 
       this.room = respCreateRoom.data;
       this.dataApp.setRoom(this.room!);
+      this.dataApp.setIsLoader(false);
 
       this.dataApp.goToPage("/lobby");
     });

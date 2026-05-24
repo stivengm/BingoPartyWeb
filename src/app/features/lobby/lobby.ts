@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Header } from '../../shared/layout/header/header';
 import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
 import { DataAppService } from '../../core/services/data-app.service';
@@ -21,6 +21,8 @@ export class Lobby implements OnInit {
   player: Player = {} as Player;
   room: RoomModel = {} as RoomModel;
 
+  playersOnline: any = [];
+
   board: BingoCell[][] = [];
 
   rangosBoard = {
@@ -33,7 +35,8 @@ export class Lobby implements OnInit {
 
   constructor(
     private dataApp: DataAppService,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -79,6 +82,17 @@ export class Lobby implements OnInit {
     this.room;
     this.roomService.getPlayers(this.room.id).subscribe((players: any) => {
       // TODO: Agregar los usuarios activos.
+      debugger;
+
+      console.log(players);
+
+      this.playersOnline = players;
+
+
+      JSON.stringify(this.playersOnline);
+
+      this.cdr.detectChanges();
+      
     });
   }
 

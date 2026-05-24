@@ -32,7 +32,6 @@ export class RoomService {
     }
 
     getPlayers(roomCode: string): Observable<Player[]> {
-        debugger;
         const playersRef = ref(
         this.db,
         `rooms/${roomCode}/players`

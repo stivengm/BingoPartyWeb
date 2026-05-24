@@ -6,6 +6,8 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RoomService } from '../../core/services/room.service';
 import { JoinRoomModel } from '../../core/models/join_room.model';
+import { errorModal } from '../../utils/modals';
+import { RoomModel } from '../../core/models/room.model';
 
 @Component({
   selector: 'app-login-room',
@@ -18,6 +20,7 @@ import { JoinRoomModel } from '../../core/models/join_room.model';
 })
 export class LoginRoom implements OnInit {
   player: Player = {} as Player;
+  room: RoomModel = {} as RoomModel;
   public roomControl = new FormControl('');
 
   public keys: string[] = [
@@ -86,6 +89,14 @@ export class LoginRoom implements OnInit {
 
     this.roomService.joinRoom(joinRoom).subscribe((joinRoom) => {
       debugger;
+      if (joinRoom.code != "JR001") {
+        errorModal({ title: joinRoom.message ?? "Ha ocurrido un error"});
+        return;
+      }
+
+      this.room = joinRoom.data;
+      this.dataApp.setRoom(this.room!);
+      this.dataApp.setIsLoader(false);
 
       this.dataApp.goToPage("/lobby");
     });

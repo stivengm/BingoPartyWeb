@@ -35,6 +35,23 @@ export class DataAppService {
     }
 
     //#region Evento para almacenar el alias de la persona
+    private $isLoader = new BehaviorSubject<boolean>(false);
+
+    public setIsLoader(val: boolean): void {
+        this.$isLoader.next(val);
+    }
+
+    public getIsLoader(): Observable<boolean> {
+        return this.$isLoader.asObservable();
+    }
+
+    public getCurrentIsLoader(): boolean {
+        return this.$isLoader.getValue();
+    }
+    //#endregion
+
+
+    //#region Evento para almacenar el alias de la persona
     private $player = new BehaviorSubject<Player | null>(null);
 
     public setPlayer(val: Player | null): void {

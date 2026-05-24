@@ -25,7 +25,16 @@
         <div class="header_players_lobby">
             <h3>Jugadores en la sala</h3>
 
-            <p>8 Conectados</p>
+            <p>{{ playersOnline.length }} Conectados</p>
+
+        </div>
+
+        <div>
+            @for (player of playersOnline; track $index) {
+                <div>
+                    {{ player.name }}
+                </div>
+            }
         </div>
 
 
