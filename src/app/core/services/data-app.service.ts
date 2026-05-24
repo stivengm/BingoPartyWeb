@@ -120,6 +120,19 @@ export class DataAppService {
 
 
     //#region Evento para almacenar el valor inicial del countDown del inicio de la partida actual
+    private $currentBall = new BehaviorSubject<string>("waiting");
+
+    public setCurrentBall(val: string): void {
+        this.$statusGame.next(val);
+    }
+
+    public getCurrentBall(): Observable<string> {
+        return this.$statusGame.asObservable();
+    }
+    //#endregion
+
+
+    //#region Evento para almacenar el valor inicial del countDown del inicio de la partida actual
     private $statusGame = new BehaviorSubject<string>("waiting");
 
     public setStatusGame(val: string): void {

@@ -8,6 +8,7 @@ import { BingoCell } from '../../core/models/bingo_cell.model';
 import { RoomService } from '../../core/services/room.service';
 import { CommonModule } from '@angular/common';
 import { errorModal } from '../../utils/modals';
+import { statusGameEnum } from '../../core/models/status_game.model';
 
 @Component({
   selector: 'app-lobby',
@@ -148,7 +149,7 @@ export class Lobby implements OnInit {
   getRoomInLobby() {
     this.roomService.getRoomInLobby(this.room.id).subscribe((room: any) => {
       this.room = room;
-      if (room.status === 'playing') {
+      if (room.status === statusGameEnum.Playing) {
         console.log('El juego inició');
         this.dataApp.goToPage('/game_curse');
       }
