@@ -16,47 +16,6 @@
             margin: 0;
         };
     }
-    // .section_code_room {
-    //     border: 2px solid var(--primaryColor);
-    //     border-radius: 12px;
-    //     padding: 24px;
-    //     position: relative;
-    //     background-color: var(--whiteColor);
-    //     overflow: hidden;
-    //     &::after {
-    //         content: '';
-    //         position: absolute;
-    //         right: -25px;
-    //         top: -20px;
-    //         border-radius: 100%;
-    //         display: block;
-    //         width: 96px;
-    //         height: 96px;
-    //         z-index: 0;
-    //         background-color: rgba(var(--primaryColorLight), .45);
-    //     }
-    //     .text_room {
-    //         margin: 0;
-    //         text-transform: uppercase;
-    //         font-weight: bold;
-    //         font-size: 14px;
-    //         color: var(--colorText);
-    //     }
-    //     .section_code {
-    //         display: flex;
-    //         align-items: center;
-    //         justify-content: space-between;
-    //         .code {
-    //             margin: 0;
-    //             font-weight: 900;
-    //             font-size: 40px;
-    //             color: var(--colorTextWeight);
-    //         }
-    //         .primary_button {
-    //             z-index: 10;
-    //         }
-    //     }
-    // }
     .section_type_game {
         .text_style_game {
             text-transform: uppercase;
