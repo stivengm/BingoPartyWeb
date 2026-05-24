@@ -3,7 +3,7 @@ import { Header } from '../../shared/layout/header/header';
 import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
 import { DataAppService } from '../../core/services/data-app.service';
 import { Player } from '../../core/models/player.model';
-import { Room } from '../../core/models/room.model';
+import { RoomModel } from '../../core/models/room.model';
 import { BingoCell } from '../../core/models/bingo_cell.model';
 
 @Component({
@@ -18,7 +18,7 @@ import { BingoCell } from '../../core/models/bingo_cell.model';
 export class Lobby implements OnInit {
 
   player: Player = {} as Player;
-  room: Room = {} as Room;
+  room: RoomModel = {} as RoomModel;
 
   board: BingoCell[][] = [];
 
@@ -56,7 +56,7 @@ export class Lobby implements OnInit {
         return;
       }
 
-      let romStorage = this.dataApp.getStorage('room') as Room;
+      let romStorage = this.dataApp.getStorage('room') as RoomModel;
 
       if (romStorage === null) {
         // TODO: Enviar al welcome porque no existe Room

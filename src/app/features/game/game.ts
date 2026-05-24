@@ -4,7 +4,7 @@ import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
 import { CountDownOverlayGame } from '../../shared/count-down-overlay-game/count-down-overlay-game';
 import { DataAppService } from '../../core/services/data-app.service';
 import { CircleCountDown } from '../../shared/circle-count-down/circle-count-down';
-import { Room } from '../../core/models/room.model';
+import { RoomModel } from '../../core/models/room.model';
 import { VerifyGameResults } from '../../shared/verify-game-results/verify-game-results';
 
 @Component({
@@ -27,7 +27,7 @@ export class Game implements OnInit {
 
   isValidateBoard = false;
 
-  room: Room = {} as Room;
+  room: RoomModel = {} as RoomModel;
 
   constructor(
     private dataApp: DataAppService,
@@ -47,7 +47,7 @@ export class Game implements OnInit {
         return;
       }
 
-      let romStorage = this.dataApp.getStorage('room') as Room;
+      let romStorage = this.dataApp.getStorage('room') as RoomModel;
 
       if (romStorage === null) {
         // TODO: Enviar al welcome porque no existe Room

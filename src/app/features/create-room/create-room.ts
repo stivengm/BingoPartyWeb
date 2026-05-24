@@ -3,8 +3,12 @@ import { Header } from '../../shared/layout/header/header';
 import { CommonModule, NgClass } from "@angular/common";
 import { DataAppService } from '../../core/services/data-app.service';
 import { errorModal } from '../../utils/modals';
-import { Room } from '../../core/models/room.model';
+import { RoomModel } from '../../core/models/room.model';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RoomService } from '../../core/services/room.service';
+import { CreateRoomModel } from '../../core/models/create_room.model';
+import { Player } from '../../core/models/player.model';
+import { ResponseServicesModel } from '../../core/models/response_services.model';
 
 @Component({
   selector: 'app-create-room',
@@ -21,12 +25,13 @@ export class CreateRoom {
 
   idGameType = 0;
   idBoardType = 0;
+  player: Player = {} as Player;
 
   idRoom = "";
 
   boards = [1, 2, 3, 4, 5, 6, 7, 8];
 
-  room: Room = {} as Room;
+  room: RoomModel = {} as RoomModel;
 
   public timer = new FormControl(
     '10',
@@ -37,13 +42,35 @@ export class CreateRoom {
   );
 
   constructor(
-    private dataApp: DataAppService
+    private dataApp: DataAppService,
+    private roomService: RoomService
   ) {}
 
   ngOnInit() {
+    this.getPlayer();
+
     this.idRoom = Array.from({ length: 6 }, () =>
       Math.floor(Math.random() * 10)
     ).join('');
+  }
+
+  getPlayer() {
+    this.dataApp.getPlayer().subscribe((player) => {
+      if (player != null) {
+        this.player = player;
+        return;
+      }
+
+      let playerStorage = this.dataApp.getStorage('player') as Player;
+
+      if (playerStorage === null) {
+        // TODO: Enviar al welcome porque no existe player
+        return;
+      };
+      
+      this.player = playerStorage;
+      this.dataApp.setPlayer(playerStorage);
+    });
   }
 
   returnWelcome() {
@@ -61,6 +88,8 @@ export class CreateRoom {
       return;
     }
 
+    debugger;
+
     this.room!.id = this.idRoom;
     this.room!.hostId = this.idRoom;
     this.room!.status = 'waiting';
@@ -68,8 +97,23 @@ export class CreateRoom {
 
     this.dataApp.setRoom(this.room!);
 
-    // TODO: Realizar la creación de la sala con servicio.
-    this.dataApp.goToPage("/lobby");
+    let createRoom: CreateRoomModel = {
+      hostName: this.player.name,
+      gameBoardType: this.idBoardType,
+      secondsBalls: parseInt(this.timer.value!.toString()) ?? 10,
+      gameType: this.idGameType
+    }
+
+    this.roomService.createRoom(createRoom).subscribe((respCreateRoom: ResponseServicesModel<RoomModel>) => {
+      console.log(respCreateRoom);
+      
+      if (respCreateRoom.code != "CR001") {
+        errorModal({ title: respCreateRoom.message ?? "Ha ocurrido un error"});
+        return;
+      }
+
+      this.dataApp.goToPage("/lobby");
+    });
   }
 
   selectedGameType(id: number) {

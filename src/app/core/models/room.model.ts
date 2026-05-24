@@ -1,7 +1,8 @@
 import { Ball } from "./ball.model";
 import { Player } from "./player.model";
 
-export interface Room {
+export interface RoomModel {
+  
   id?: string;
   hostId?: string;
   timer: number;
