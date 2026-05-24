@@ -23,21 +23,19 @@
 
     <div class="section_players_lobby">
         <div class="header_players_lobby">
-            <h3>Jugadores en la sala</h3>
+            <h3 class="title_header_players">Jugadores en la sala</h3>
 
-            <p>{{ playersOnline.length }} Conectados</p>
-
+            <p class="players_online">{{ playersOnline.length }} Conectados</p>
         </div>
 
-        <div>
+        <div class="section_all_players_online">
             @for (player of playersOnline; track $index) {
-                <div>
-                    {{ player.name }}
+                <div class="player_account">
+                    <div class="img_profile"></div>
+                    <p class="player_name">{{ player.name }}</p>
                 </div>
             }
         </div>
-
-
     </div>
 
     @if (player.isHost) {

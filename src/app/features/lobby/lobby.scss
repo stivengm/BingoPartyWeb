@@ -59,6 +59,54 @@
             }
         }
     }
+    .section_players_lobby {
+        margin-bottom: 60px;
+        .header_players_lobby {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .title_header_players {
+                margin: 0;
+            }
+            .players_online {
+                margin: 0;
+                font-size: 16px;
+                color: var(--secondaryColor);
+            }
+        }
+        .section_all_players_online {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            // grid-template-columns: repeat(3, 1fr);
+            .player_account {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 70px;
+                .img_profile {
+                    width: 64px;
+                    height: 64px;
+                    background-color: red;
+                    border-radius: 100%;
+                }
+                .player_name {
+                    width: 100%;
+                    margin: 0;
+                    text-align: center;
+                    color: var(--colorTitles);
+                    overflow: hidden;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    text-overflow: ellipsis;
+                    word-break: break-word;
+                }
+            }
+        }
+    }
     .actions_buttons {
         position: fixed;
         width: 100%;
