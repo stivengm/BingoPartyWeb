@@ -43,7 +43,7 @@ export class Game implements OnInit {
     this.dataApp.getRoom().subscribe((room) => {
       if (room != null) {
         this.room = room;
-        this.timerChangeBall = this.room.timer;
+        this.timerChangeBall = this.room.secondsBalls;
         return;
       }
 
