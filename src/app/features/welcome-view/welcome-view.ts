@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Version } from "../../shared/version/version";
 import { Bingo } from '../../shared/bingo/bingo';
 import { DataAppService } from '../../core/services/data-app.service';
@@ -7,6 +7,9 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Header } from '../../shared/layout/header/header';
 import { errorModal } from '../../utils/modals';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef } from '@angular/core';
 
 @Component({
   selector: 'app-welcome-view',
@@ -22,6 +25,8 @@ import { errorModal } from '../../utils/modals';
 export class WelcomeView implements OnInit {
 
   player: Player | null = null;
+  private destroyRef = inject(DestroyRef);
+  
 
   public aliasControl = new FormControl(
     '',
@@ -38,7 +43,8 @@ export class WelcomeView implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.dataApp.getPlayer().subscribe((player) => {
+    this.dataApp.getPlayer().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((player) => {
+      debugger;
       if (player != null) {
         this.player = player;
         this.aliasControl.patchValue(player.name);
@@ -49,9 +55,6 @@ export class WelcomeView implements OnInit {
 
       if (playerStorage === null) return;
 
-      if (player == null) {
-        this.dataApp.setPlayer(playerStorage);
-      }
       this.player = playerStorage;
       this.aliasControl.patchValue(playerStorage.name);
     });
