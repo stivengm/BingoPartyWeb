@@ -5,6 +5,7 @@ import { DataAppService } from '../../core/services/data-app.service';
 import { Player } from '../../core/models/player.model';
 import { RoomModel } from '../../core/models/room.model';
 import { BingoCell } from '../../core/models/bingo_cell.model';
+import { RoomService } from '../../core/services/room.service';
 
 @Component({
   selector: 'app-lobby',
@@ -30,7 +31,10 @@ export class Lobby implements OnInit {
     o: [61, 75]
   };
 
-  constructor(private dataApp: DataAppService) {}
+  constructor(
+    private dataApp: DataAppService,
+    private roomService: RoomService
+  ) {}
 
   ngOnInit() {
     this.dataApp.getPlayer().subscribe((player) => {
@@ -68,6 +72,14 @@ export class Lobby implements OnInit {
     });
 
     this.generateBingoBoard();
+    this.getPlayersRoom();
+  }
+
+  getPlayersRoom() {
+    this.room;
+    this.roomService.getPlayers(this.room.id).subscribe((players: any) => {
+      // TODO: Agregar los usuarios activos.
+    });
   }
 
   generateBingoBoard() {

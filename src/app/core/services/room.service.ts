@@ -1,16 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { CreateRoomModel } from '../models/create_room.model';
 import { ResponseServicesModel } from '../models/response_services.model';
 import { RoomModel } from '../models/room.model';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+
+import { Player } from '../models/player.model';
+import { objectVal, ref, Database } from '@angular/fire/database';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoomService {
+
+    private db = inject(Database);
 
     constructor(
         private router: Router,
@@ -19,5 +24,24 @@ export class RoomService {
 
     createRoom(room: CreateRoomModel): Observable<ResponseServicesModel<RoomModel>> {
         return this.http.post<ResponseServicesModel<RoomModel>>(`${environment.apiUrl}/rooms/create`, room);
+    }
+
+    getPlayers(roomCode: string): Observable<Player[]> {
+        debugger;
+        const playersRef = ref(
+        this.db,
+        `rooms/${roomCode}/players`
+        );
+
+        return objectVal(playersRef).pipe(
+            map((players: any) => {
+                if (!players) {
+                return [];
+                }
+
+                return Object.values(players);
+
+            })
+        ) as Observable<Player[]>;
     }
 }
