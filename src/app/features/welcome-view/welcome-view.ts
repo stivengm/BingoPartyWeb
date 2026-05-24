@@ -44,7 +44,6 @@ export class WelcomeView implements OnInit {
 
   ngOnInit() {
     this.dataApp.getPlayer().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((player) => {
-      debugger;
       if (player != null) {
         this.player = player;
         this.aliasControl.patchValue(player.name);

@@ -86,14 +86,14 @@ export class LoginRoom implements OnInit {
       playerName: this.player.name
     }
 
-    this.roomService.joinRoom(joinRoom).subscribe((joinRoom) => {
-      if (joinRoom.code != "JR001") {
-        errorModal({ title: joinRoom.message ?? "Ha ocurrido un error"});
+    this.roomService.joinRoom(joinRoom).subscribe((joinPlayer: any) => {
+      if (joinPlayer.code != "JR001") {
+        errorModal({ title: joinPlayer.message ?? "Ha ocurrido un error"});
         return;
       }
 
-      this.dataApp.setPlayer(joinRoom.data.player);
-      this.room = joinRoom.data;
+      this.dataApp.setPlayer(joinPlayer.data.player);
+      this.room = joinPlayer.data;
       this.dataApp.setRoom(this.room!);
       this.dataApp.setIsLoader(false);
 

@@ -84,24 +84,23 @@ export class Lobby implements OnInit {
   }
 
   getPlayersRoom() {
+    this.roomService.getPlayers(this.room.id).subscribe((players: any[]) => {
+      if (this.player?.id) {
+        players.sort((a, b) => {
+          if (a.id === this.player.id) {
+            return -1;
+          }
 
-  this.roomService.getPlayers(this.room.id).subscribe((players: any[]) => {
-    if (this.player?.id) {
-      players.sort((a, b) => {
-        if (a.id === this.player.id) {
-          return -1;
-        }
-
-        if (b.id === this.player.id) {
-          return 1;
-        }
-        return 0;
-      });
-    }
-    this.playersOnline = players;
-    this.cdr.detectChanges();
-  });
-}
+          if (b.id === this.player.id) {
+            return 1;
+          }
+          return 0;
+        });
+      }
+      this.playersOnline = players;
+      this.cdr.detectChanges();
+    });
+  }
 
   generateBingoBoard() {
     const columnas = [
@@ -149,7 +148,7 @@ export class Lobby implements OnInit {
   getRoomInLobby() {
     this.roomService.getRoomInLobby(this.room.id).subscribe((room: any) => {
       this.room = room;
-      if (room.status === statusGameEnum.Playing) {
+      if (room != null && room.status === statusGameEnum.Playing) {
         console.log('El juego inició');
         this.dataApp.goToPage('/game_curse');
       }
