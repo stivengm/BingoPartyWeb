@@ -30,9 +30,9 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v6.4.0
 
-      # Instalación de dependencias
+      # Instalación de dependencias de manera forzada para Firebase
       - name: Install Dependencies
-        run: npm i
+        run: npm i --force 
 
       # Build app to PRODUCCIÓN
       - name: Build app to PRODUCCIÓN
