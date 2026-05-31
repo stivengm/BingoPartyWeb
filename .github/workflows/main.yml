@@ -36,7 +36,7 @@ jobs:
 
       # Build app to PRODUCCIÓN
       - name: Build app to PRODUCCIÓN
-        run: npm run build -- --base-href=/BingoParty/
+        run: npm run build -- --base-href=/BingoPartyWeb/
 
       # Deploy to GitHub Pages
       - name: Deploy to Pages
