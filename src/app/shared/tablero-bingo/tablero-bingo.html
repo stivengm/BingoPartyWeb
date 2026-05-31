@@ -8,12 +8,13 @@
             }
         </div>
     }
-    @for (row of board; track $index) {
+    @for (row of board; track $index; let rowIndex = $index) {
         <div class="board_row">
-            @for (cell of row; track $index) {
+            @for (cell of row; track $index; let colIndex = $index) {
                 <div
                     class="board_cell"
                     [class.marked]="cell.marked"
+                    [class.ingame]="isInGame(rowIndex, colIndex)"
                     [class.disabled]="cell.disabled"
                     [class]="cell.cssClass"
                     (click)="onSelect(cell)"

@@ -18,7 +18,7 @@
             <img src="assets/icons/refresh.svg" (click)="generateBingoBoard()" alt="Icono refrescar tarjetón">
         </div>
 
-        <app-tablero-bingo [isViewLetters]="false" [isBoardDisabled]="true"></app-tablero-bingo>
+        <app-tablero-bingo [isViewLetters]="false" [isBoardDisabled]="true" [boardId]="room.gameBoardType"></app-tablero-bingo>
     </div>
 
     <div class="section_players_lobby">

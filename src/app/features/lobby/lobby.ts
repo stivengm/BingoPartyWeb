@@ -17,7 +17,7 @@ import { UpdateGameModel } from '../../core/models/update_game.model';
     Header,
     TableroBingo,
     CommonModule
-],
+  ],
   templateUrl: './lobby.html',
   styleUrl: './lobby.scss',
 })
@@ -63,6 +63,7 @@ export class Lobby implements OnInit {
     });
 
     this.dataApp.getRoom().subscribe((room) => {
+      debugger;
       if (room != null) {
         this.room = room;
         return;
@@ -74,7 +75,7 @@ export class Lobby implements OnInit {
         // TODO: Enviar al welcome porque no existe Room
         return;
       };
-      
+
       this.room = romStorage;
       this.dataApp.setRoom(romStorage);
     });
