@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, signal, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, signal } from '@angular/core';
 import { DataAppService } from '../../core/services/data-app.service';
 import { RoomService } from '../../core/services/room.service';
 import { RoomModel } from '../../core/models/room.model';
@@ -9,26 +9,25 @@ import { RoomModel } from '../../core/models/room.model';
   templateUrl: './circle-count-down.html',
   styleUrl: './circle-count-down.scss',
 })
-export class CircleCountDown implements OnInit {
+export class CircleCountDown implements OnInit, OnChanges {
 
-  @Input() seconds: number = 10;
+  @Input() paused = false;
+  @Input() seconds = 10;
+  @Input() trigger = 0;
+
   isViewInfoBall = false;
 
-  // Cambia este valor para reiniciar
-  @Input() trigger: number = 0;
-
   progress = signal(100);
-
   timer = signal(0);
 
   interval!: ReturnType<typeof setInterval>;
+  restartInterval!: ReturnType<typeof setInterval>;
 
   radius = 54;
   circumference = 2 * Math.PI * this.radius;
 
   room: RoomModel = {} as RoomModel;
-  currentBall: any = null; 
-
+  currentBall: any = null;
 
   lastThreeBalls: any[] = [];
 
@@ -37,7 +36,7 @@ export class CircleCountDown implements OnInit {
     private roomService: RoomService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataApp.getRoom().subscribe((room) => {
       if (room != null) {
         this.room = room;
@@ -46,28 +45,49 @@ export class CircleCountDown implements OnInit {
         return;
       }
 
-      let romStorage = this.dataApp.getStorage('room') as RoomModel;
+      const roomStorage = this.dataApp.getStorage('room') as RoomModel;
 
-      if (romStorage === null) {
-        // TODO: Enviar al welcome porque no existe Room
+      if (roomStorage === null) {
         return;
-      };
-      
-      this.room = romStorage;
-      this.dataApp.setRoom(romStorage);
+      }
+
+      this.room = roomStorage;
+      this.dataApp.setRoom(roomStorage);
     });
-    
+
     this.dataApp.getIsViewInitialGame().subscribe((value) => {
       this.isViewInfoBall = !value;
 
-      if (this.isViewInfoBall) {
-        this.start();
-
-        setInterval(() => {
-          this.start();
-        }, (this.seconds + 0.5) * 1000);
+      if (this.isViewInfoBall && !this.paused) {
+        this.startCounterCycle();
       }
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['paused']) {
+
+      if (this.paused) {
+        this.stopCounterCycle();
+      } else if (this.isViewInfoBall) {
+        this.startCounterCycle();
+      }
+    }
+  }
+
+  startCounterCycle(): void {
+    this.stopCounterCycle();
+    this.start();
+    this.restartInterval = setInterval(() => {
+      if (!this.paused) {
+        this.start();
+      }
+    }, (this.seconds + 0.5) * 1000);
+  }
+
+  stopCounterCycle(): void {
+    clearInterval(this.interval);
+    clearInterval(this.restartInterval);
   }
 
   start(): void {
@@ -77,6 +97,10 @@ export class CircleCountDown implements OnInit {
     this.progress.set(100);
 
     this.interval = setInterval(() => {
+      if (this.paused) {
+        clearInterval(this.interval);
+        return;
+      }
       current--;
       this.timer.set(current);
       const percentage = (current / this.seconds) * 100;
@@ -91,24 +115,26 @@ export class CircleCountDown implements OnInit {
     return this.circumference - (this.progress() / 100) * this.circumference;
   }
 
-  getCalledBalls(roomId: string) {
+  getCalledBalls(roomId: string): void {
     this.roomService.getCalledBalls(roomId).subscribe((balls: any[]) => {
       if (!balls) {
         this.lastThreeBalls = [];
         return;
       }
-      
+
       this.lastThreeBalls = balls.slice(-3).reverse();
-      console.log(this.lastThreeBalls);
     });
   }
 
-  getCurrentBall(roomId: string) {
-    this.roomService.getCurrentBall(roomId).subscribe((isChangeCurrentBall: any) => {
-      this.currentBall = {
-        letter: isChangeCurrentBall.letter,
-        number: isChangeCurrentBall.number
+  getCurrentBall(roomId: string): void {
+    this.roomService.getCurrentBall(roomId).subscribe((currentBall: any) => {
+      if (!currentBall) {
+        return;
       }
+      this.currentBall = {
+        letter: currentBall.letter,
+        number: currentBall.number
+      };
     });
   }
 

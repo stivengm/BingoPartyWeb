@@ -26,7 +26,6 @@ export class TableroBingo {
   ngOnInit(): void {
     this.dataApp.getRoom().subscribe((room) => {
       if (room != null) {
-        debugger;
         this.boardId = room.gameBoardType;
         return;
       }
@@ -46,7 +45,6 @@ export class TableroBingo {
     }
 
     this.dataApp.getBoard().subscribe((board) => {
-      debugger;
       if (board) {
         this.board = board;
         // this.boardId = board.boardId;
@@ -56,7 +54,6 @@ export class TableroBingo {
       const boardStorage = this.dataApp.getStorage('board') as BingoCell[][];
 
       if (boardStorage) {
-        debugger;
         this.board = boardStorage;
         // this.boardId = board.boardId;
         return;

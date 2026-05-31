@@ -63,7 +63,6 @@ export class Lobby implements OnInit {
     });
 
     this.dataApp.getRoom().subscribe((room) => {
-      debugger;
       if (room != null) {
         this.room = room;
         return;

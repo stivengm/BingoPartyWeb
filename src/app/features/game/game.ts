@@ -29,6 +29,8 @@ import { BingoCell } from '../../core/models/bingo_cell.model';
 })
 export class Game implements OnInit {
 
+  private generateBallInterval: any;
+
   isViewInitialGame = true;
   player: Player = {} as Player;
   playerLastUpdateGame: Player = {} as Player;
@@ -92,7 +94,7 @@ export class Game implements OnInit {
 
         generate();
 
-        setInterval(() => {
+        this.generateBallInterval = setInterval(() => {
           generate();
         }, (this.timerChangeBall + 0.5) * 1000);
       }
@@ -140,9 +142,14 @@ export class Game implements OnInit {
     this.roomService.getRoomSuscription(this.room.id).subscribe((updateRoom: any) => {
 
       if (updateRoom != null && updateRoom.status === statusGameEnum.Paused) {
-        debugger;
-        console.log("El juego se pausó.");
         this.isValidateBoard = true;
+
+        // Detener generación de balotas
+        if (this.generateBallInterval) {
+          clearInterval(this.generateBallInterval);
+          this.generateBallInterval = null;
+        }
+
         this.boardLastUpdateGame = updateRoom.boardLastUpdateGame;
         this.playerLastUpdateGame = updateRoom.playerLastUpdateGame;
         this.cdr.detectChanges();
@@ -160,8 +167,6 @@ export class Game implements OnInit {
 
     // Pausar juego
     this.roomService.pauseRoom(pauseRoom).subscribe((isPauseGame) => {
-
-      debugger;
       console.log(isPauseGame);
     });
   }
