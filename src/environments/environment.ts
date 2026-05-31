@@ -2,8 +2,8 @@ import packageJson from '../../package.json';
 
 export const environment = {
     version: packageJson.version,
-    production: false,
-    apiUrl: "http://localhost:3000",
+    production: true,
+    apiUrl: "https://bingopartybackend.onrender.com",
     firebaseConfig: {
         apiKey: "AIzaSyA-v_9ENamID9Zvr9D4I0IOINVtRIxlJik",
         authDomain: "bingoparty-df037.firebaseapp.com",

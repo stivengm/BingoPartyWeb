@@ -4,4 +4,5 @@ export interface UpdateGameModel {
     roomId: string;
     playerId: string;
     status: statusGameEnum;
+    board?: any;
 }

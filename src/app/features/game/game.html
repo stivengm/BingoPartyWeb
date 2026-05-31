@@ -20,5 +20,5 @@
 
 
 @if (isValidateBoard) {
-    <app-verify-game-results></app-verify-game-results>
+    <app-verify-game-results [player]="playerLastUpdateGame" [board]="boardLastUpdateGame"></app-verify-game-results>
 }

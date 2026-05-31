@@ -13,6 +13,7 @@ import { GenerateBallModel } from '../../core/models/generate_ball.model';
 import { statusGameEnum } from '../../core/models/status_game.model';
 import { errorModal } from '../../utils/modals';
 import { UpdateGameModel } from '../../core/models/update_game.model';
+import { BingoCell } from '../../core/models/bingo_cell.model';
 
 @Component({
   selector: 'app-game',
@@ -30,6 +31,9 @@ export class Game implements OnInit {
 
   isViewInitialGame = true;
   player: Player = {} as Player;
+  playerLastUpdateGame: Player = {} as Player;
+  board: BingoCell[][] = [];
+  boardLastUpdateGame: BingoCell[][] = [];
 
   statusGame = "";
 
@@ -53,6 +57,20 @@ export class Game implements OnInit {
         this.dataApp.setStatusGame(statusGameEnum.Playing);
       }
       this.cdr.detectChanges();
+    });
+
+    this.dataApp.getBoard().subscribe((board) => {
+      if (board) {
+        this.board = board;
+        return;
+      }
+
+      const boardStorage = this.dataApp.getStorage('board') as BingoCell[][];
+
+      if (boardStorage) {
+        this.board = boardStorage;
+        return;
+      }
     });
 
     this.dataApp.getStatusGame().subscribe((val) => {
@@ -119,12 +137,14 @@ export class Game implements OnInit {
   }
 
   getRoomInGame() {
-    this.roomService.getRoomSuscription(this.room.id).subscribe((updateRoom) => {
+    this.roomService.getRoomSuscription(this.room.id).subscribe((updateRoom: any) => {
 
       if (updateRoom != null && updateRoom.status === statusGameEnum.Paused) {
         debugger;
         console.log("El juego se pausó.");
         this.isValidateBoard = true;
+        this.boardLastUpdateGame = updateRoom.boardLastUpdateGame;
+        this.playerLastUpdateGame = updateRoom.playerLastUpdateGame;
         this.cdr.detectChanges();
       }
     });
@@ -134,11 +154,12 @@ export class Game implements OnInit {
     let pauseRoom: UpdateGameModel = {
       roomId: this.room.id,
       playerId: this.player.id,
-      status: statusGameEnum.Paused
+      status: statusGameEnum.Paused,
+      board: this.board
     }
 
     // Pausar juego
-    this.roomService.updateRoom(pauseRoom).subscribe((isPauseGame) => {
+    this.roomService.pauseRoom(pauseRoom).subscribe((isPauseGame) => {
 
       debugger;
       console.log(isPauseGame);
