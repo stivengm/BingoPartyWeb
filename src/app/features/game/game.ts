@@ -14,6 +14,7 @@ import { statusGameEnum } from '../../core/models/status_game.model';
 import { errorModal } from '../../utils/modals';
 import { UpdateGameModel } from '../../core/models/update_game.model';
 import { BingoCell } from '../../core/models/bingo_cell.model';
+import { CalledBall, statusBall, VerifyBall } from '../../core/models/verify_ball';
 
 @Component({
   selector: 'app-game',
@@ -36,6 +37,8 @@ export class Game implements OnInit {
   playerLastUpdateGame: Player = {} as Player;
   board: BingoCell[][] = [];
   boardLastUpdateGame: BingoCell[][] = [];
+  calledBalls: any;
+  allBallsCalled: any;
 
   statusGame = "";
 
@@ -150,10 +153,33 @@ export class Game implements OnInit {
           this.generateBallInterval = null;
         }
 
+        this.calledBalls = updateRoom.calledBalls;
+        this.allBallsCalled = this.buildVerifyBalls(this.calledBalls);
+
         this.boardLastUpdateGame = updateRoom.boardLastUpdateGame;
         this.playerLastUpdateGame = updateRoom.playerLastUpdateGame;
         this.cdr.detectChanges();
       }
+    });
+  }
+
+  private buildVerifyBalls(
+    calledBalls: Record<string, CalledBall>): VerifyBall[] {
+
+    const calledNumbers = new Set<number>();
+
+    Object.values(calledBalls || {}).forEach(ball => {
+      calledNumbers.add(ball.number);
+    });
+
+    return Array.from({ length: 75 }, (_, index) => {
+      const number = index + 1;
+
+      return {
+        id: number,
+        isComplete: calledNumbers.has(number),
+        status: statusBall.Pending
+      };
     });
   }
 
