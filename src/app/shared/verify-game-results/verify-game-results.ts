@@ -7,6 +7,10 @@ import { DataAppService } from '../../core/services/data-app.service';
 import { Player } from '../../core/models/player.model';
 import { BingoCell } from '../../core/models/bingo_cell.model';
 import { VerifyBall, VerifyCell } from '../../core/models/verify_cell.model';
+import { RoomService } from '../../core/services/room.service';
+import { UpdateGameModel } from '../../core/models/update_game.model';
+import { statusGameEnum } from '../../core/models/status_game.model';
+import { RoomModel } from '../../core/models/room.model';
 
 @Component({
   selector: 'app-verify-game-results',
@@ -22,6 +26,7 @@ export class VerifyGameResults implements OnInit, OnChanges {
   @Input() player: Player = {} as Player;
   @Input() board: BingoCell[][] = [];
 
+  room: RoomModel = {} as RoomModel;
   boardVerify: VerifyCell[][] = [];
   isFinishedValidation = false;
   isValidBoard: boolean | null = null;
@@ -32,10 +37,28 @@ export class VerifyGameResults implements OnInit, OnChanges {
 
   constructor(
     private dataApp: DataAppService,
+    private roomService: RoomService,
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dataApp.getRoom().subscribe((room) => {
+      if (room != null) {
+        this.room = room;
+        return;
+      }
+
+      let romStorage = this.dataApp.getStorage('room') as RoomModel;
+
+      if (romStorage === null) {
+        // TODO: Enviar al welcome porque no existe Room
+        return;
+      };
+      
+      this.room = romStorage;
+      this.dataApp.setRoom(romStorage);
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
@@ -166,17 +189,11 @@ export class VerifyGameResults implements OnInit, OnChanges {
 
         // NO PARTICIPA EN EL PATRÓN
         if (!cell.isInGame) {
-
           cell.status = 'active-error';
-
           this.cdr.detectChanges();
-
           await this.sleep(200);
-
           cell.status = 'error';
-
           this.cdr.detectChanges();
-
           continue;
         }
 
@@ -198,7 +215,6 @@ export class VerifyGameResults implements OnInit, OnChanges {
         }
 
         this.cdr.detectChanges();
-
         await this.sleep(500);
 
         cell.status = success
@@ -226,7 +242,15 @@ export class VerifyGameResults implements OnInit, OnChanges {
   }
 
   goToWin() {
+    let winRoom: UpdateGameModel = {
+      roomId: this.room.id,
+      playerId: this.player.id,
+      status: statusGameEnum.Finished,
+      board: this.board
+    }
 
+    // Finalizar juego
+    this.roomService.updateRoomUser(winRoom).subscribe((isPauseGame) => {console.log(isPauseGame)});
   }
 
   resumeRoom() {

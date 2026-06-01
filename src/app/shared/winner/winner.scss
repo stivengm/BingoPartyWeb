@@ -1,0 +1,81 @@
+.content_winner {
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(var(--secondaryColorWeightRGB), .8);
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .modal_winner {
+        background-color: var(--whiteColor);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 4px solid var(--primaryColor);
+        border-radius: 40px;
+        gap: 20px;
+        padding-top: 48px;
+        padding-bottom: 32px;
+        width: 100%;
+        .section_winner {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            border-radius: 100%;
+            background-color: var(--bgActualRoom);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-box-shadow: 0px 5px 48px -1px #B0B0B0; 
+            box-shadow: 0px 5px 48px -1px #B0B0B0;
+            .confeti {
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 4px solid var(--whiteColor);
+                width: 64px;
+                height: 64px;
+                background-color: var(--primaryColor);
+                border-radius: 100%;
+                bottom: -10px;
+                right: -8px;
+                -webkit-box-shadow: 0px 5px 48px -1px #B0B0B0; 
+                box-shadow: 0px 5px 48px -1px #B0B0B0;
+            }
+        }
+        .information_winner {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+            .title_bingo {
+                color: var(--colorTextWeight);
+                margin: 0;
+                font-weight: 900;
+                font-size: 64px;
+                text-shadow: 0px 4px 2px #AD9000;
+            }
+            .name_winner {
+                color: var(--secondaryColor);
+                margin: 0;
+                font-size: 16px;
+                font-weight: normal;
+            }
+        }
+        .actions_modal_winner {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .actions_shared {
+            display: flex;
+            gap: 10px;
+            .text_shared {
+                color: var(--secondaryColor);
+                font-size: 16px;
+            }
+        }
+    }
+}

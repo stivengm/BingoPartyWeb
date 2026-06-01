@@ -15,6 +15,7 @@ import { errorModal } from '../../utils/modals';
 import { UpdateGameModel } from '../../core/models/update_game.model';
 import { BingoCell } from '../../core/models/bingo_cell.model';
 import { CalledBall, statusBall, VerifyBall } from '../../core/models/verify_ball';
+import { Winner } from '../../shared/winner/winner';
 
 @Component({
   selector: 'app-game',
@@ -23,7 +24,8 @@ import { CalledBall, statusBall, VerifyBall } from '../../core/models/verify_bal
     TableroBingo,
     CountDownOverlayGame,
     CircleCountDown,
-    VerifyGameResults
+    VerifyGameResults,
+    Winner
   ],
   templateUrl: './game.html',
   styleUrl: './game.scss',
@@ -46,6 +48,7 @@ export class Game implements OnInit {
   timerChangeBall = 0;
 
   isValidateBoard = false;
+  isWinnerGame = false;
 
   room: RoomModel = {} as RoomModel;
 
@@ -146,6 +149,7 @@ export class Game implements OnInit {
     this.roomService.getRoomSuscription(this.room.id).subscribe((updateRoom: any) => {
 
       if (updateRoom != null && updateRoom.status === statusGameEnum.Paused) {
+        this.isWinnerGame = false;
         this.isValidateBoard = true;
 
         // Detener generación de balotas
@@ -160,6 +164,14 @@ export class Game implements OnInit {
 
         this.boardLastUpdateGame = updateRoom.boardLastUpdateGame;
         this.playerLastUpdateGame = updateRoom.playerLastUpdateGame;
+        this.cdr.detectChanges();
+      }
+
+      if (updateRoom != null && updateRoom.status === statusGameEnum.Finished) {
+        this.isValidateBoard = false;
+        this.isWinnerGame = true;
+
+        console.log("Ya hay un ganador!");
         this.cdr.detectChanges();
       }
     });
@@ -194,7 +206,7 @@ export class Game implements OnInit {
     }
 
     // Pausar juego
-    this.roomService.pauseRoom(pauseRoom).subscribe((isPauseGame) => {
+    this.roomService.updateRoomUser(pauseRoom).subscribe((isPauseGame) => {
       console.log(isPauseGame);
     });
   }
