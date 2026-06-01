@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Header } from '../../shared/layout/header/header';
 import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
 import { DataAppService } from '../../core/services/data-app.service';
@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { errorModal } from '../../utils/modals';
 import { statusGameEnum } from '../../core/models/status_game.model';
 import { UpdateGameModel } from '../../core/models/update_game.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-lobby',
@@ -23,6 +24,7 @@ import { UpdateGameModel } from '../../core/models/update_game.model';
 })
 export class Lobby implements OnInit {
 
+  private destroyRef = inject(DestroyRef);
   player: Player = {} as Player;
   room: RoomModel = {} as RoomModel;
 
@@ -147,7 +149,7 @@ export class Lobby implements OnInit {
   }
 
   getRoomInLobby() {
-    this.roomService.getRoomSuscription(this.room.id).subscribe((room: any) => {
+    this.roomService.getRoomSuscription(this.room.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((room: any) => {
       this.room = room;
       if (room != null && room.status === statusGameEnum.Playing) {
         console.log('El juego inició');
