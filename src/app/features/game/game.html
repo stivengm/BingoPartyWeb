@@ -24,6 +24,7 @@
 
 @if (isValidateBoard) {
     <app-verify-game-results 
+        [boardId]="boardId"
         [player]="playerLastUpdateGame" 
         [board]="boardLastUpdateGame"
         [allBallsCalled]="allBallsCalled">

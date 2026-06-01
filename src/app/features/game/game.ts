@@ -39,6 +39,7 @@ export class Game implements OnInit {
   boardLastUpdateGame: BingoCell[][] = [];
   calledBalls: any;
   allBallsCalled: any;
+  boardId: number = 0;
 
   statusGame = "";
 
@@ -153,6 +154,7 @@ export class Game implements OnInit {
           this.generateBallInterval = null;
         }
 
+        this.boardId = updateRoom.gameBoardType;
         this.calledBalls = updateRoom.calledBalls;
         this.allBallsCalled = this.buildVerifyBalls(this.calledBalls);
 

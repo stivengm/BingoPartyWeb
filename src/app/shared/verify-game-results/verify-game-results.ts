@@ -18,6 +18,7 @@ import { VerifyBall, VerifyCell } from '../../core/models/verify_cell.model';
 })
 export class VerifyGameResults implements OnInit, OnChanges {
 
+  @Input() boardId: number = 0;
   @Input() player: Player = {} as Player;
   @Input() board: BingoCell[][] = [];
 
