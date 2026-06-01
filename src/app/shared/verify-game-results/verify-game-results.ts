@@ -92,58 +92,132 @@ export class VerifyGameResults implements OnInit, OnChanges {
   }
 
   generateBoardVerify(): void {
-    this.boardVerify = this.board.map((row) =>
-      row.map((cell) => {
+    this.boardVerify = this.board.map((row, rowIndex) =>
+      row.map((cell, colIndex) => {
+
         const drawnBall = this.allBallsCalled.find(
-          ball => ball.id === cell.value
+          ball => ball.id === Number(cell.value)
         );
+
         return {
           number: Number(cell.value),
           isDrawn: drawnBall?.isComplete ?? false,
+          isInGame: this.isInGame(rowIndex, colIndex),
           status: 'pending'
         };
       })
     );
   }
 
+  isInGame(rowIndex: number, colIndex: number): boolean {
+    switch (this.boardId) {
+
+      case 1:
+        return rowIndex === 2;
+
+      case 2:
+        return colIndex === 2;
+
+      case 3:
+        return rowIndex === colIndex;
+
+      case 4:
+        return rowIndex + colIndex === 4;
+
+      case 5:
+        return (
+          colIndex === 0 ||
+          rowIndex === 4
+        );
+
+      case 6:
+        return (
+          colIndex === 4 ||
+          rowIndex === 4
+        );
+
+      case 7:
+        return (
+          rowIndex === 0 ||
+          rowIndex === 4 ||
+          colIndex === 0 ||
+          colIndex === 4
+        );
+
+      case 8:
+        return true;
+
+      default:
+        return false;
+    }
+  }
+
   async startVerification(): Promise<void> {
+
     let hasErrors = false;
+
     for (const row of this.boardVerify) {
+
       for (const cell of row) {
+
         const ball = this.allBallsCalled.find(
           x => x.id === cell.number
         );
+
+        // NO PARTICIPA EN EL PATRÓN
+        if (!cell.isInGame) {
+
+          cell.status = 'active-error';
+
+          this.cdr.detectChanges();
+
+          await this.sleep(200);
+
+          cell.status = 'error';
+
+          this.cdr.detectChanges();
+
+          continue;
+        }
+
+        // PARTICIPA EN EL PATRÓN
         const success = cell.isDrawn;
+
         if (!success) {
           hasErrors = true;
         }
+
         cell.status = success
           ? 'active-success'
-          : 'active-error';
+          : 'active-warning';
 
         if (ball) {
           ball.status = success
             ? 'active-success'
-            : 'active-error';
+            : 'active-warning';
         }
 
         this.cdr.detectChanges();
+
         await this.sleep(500);
+
         cell.status = success
           ? 'success'
-          : 'error';
+          : 'warning';
 
         if (ball) {
           ball.status = success
             ? 'success'
-            : 'error';
+            : 'warning';
         }
+
         this.cdr.detectChanges();
       }
     }
 
     this.isValidBoard = !hasErrors;
     this.isFinishedValidation = true;
+
     this.cdr.detectChanges();
   }
 
@@ -151,4 +225,11 @@ export class VerifyGameResults implements OnInit, OnChanges {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  goToWin() {
+
+  }
+
+  resumeRoom() {
+
+  }
 }
