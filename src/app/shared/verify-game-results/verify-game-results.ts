@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 
@@ -16,7 +16,7 @@ import { VerifyBall, VerifyCell } from '../../core/models/verify_cell.model';
   templateUrl: './verify-game-results.html',
   styleUrl: './verify-game-results.scss',
 })
-export class VerifyGameResults implements OnInit {
+export class VerifyGameResults implements OnInit, OnChanges {
 
   @Input() player: Player = {} as Player;
   @Input() board: BingoCell[][] = [];
@@ -27,62 +27,68 @@ export class VerifyGameResults implements OnInit {
 
   @Input() allBallsCalled: VerifyBall[] = [];
 
+  private verificationStarted = false;
+
   constructor(
     private dataApp: DataAppService,
     private cdr: ChangeDetectorRef
   ) {}
 
-  async ngOnInit(): Promise<void> {
-    // this.loadPlayer();
-    // await this.loadBoard();
+  ngOnInit(): void {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      this.board?.length &&
+      this.allBallsCalled?.length &&
+      !this.verificationStarted
+    ) {
 
-    setInterval(() => {
-      console.log(this.allBallsCalled);
-    }, 1000);
+      this.verificationStarted = true;
 
-    this.cdr.detectChanges();
-    await this.startVerification();
+      this.generateBoardVerify();
+
+      this.startVerification();
+    }
   }
 
-  // loadPlayer(): void {
-  //   this.dataApp.getPlayer().subscribe((player) => {
-  //     if (player != null) {
-  //       this.player = player;
-  //       return;
-  //     }
+  loadPlayer(): void {
+    this.dataApp.getPlayer().subscribe((player) => {
+      if (player != null) {
+        this.player = player;
+        return;
+      }
 
-  //     const playerStorage = this.dataApp.getStorage('player') as Player;
+      const playerStorage = this.dataApp.getStorage('player') as Player;
 
-  //     if (playerStorage === null) {
-  //       return;
-  //     }
+      if (playerStorage === null) {
+        return;
+      }
 
-  //     this.player = playerStorage;
+      this.player = playerStorage;
 
-  //     this.dataApp.setPlayer(playerStorage);
+      this.dataApp.setPlayer(playerStorage);
 
-  //   });
-  // }
+    });
+  }
 
-  // async loadBoard(): Promise<void> {
-  //   return new Promise((resolve) => {
-  //     this.dataApp.getBoard().subscribe((board) => {
-  //       if (board) {
-  //         this.board = board;
-  //         this.generateBoardVerify();
-  //         resolve();
-  //         return;
-  //       }
-  //       const boardStorage = this.dataApp.getStorage('board') as BingoCell[][];
-  //       if (boardStorage) {
-  //         this.board = boardStorage;
-  //         this.generateBoardVerify();
-  //         resolve();
-  //       }
-  //     });
-  //   });
-  // }
+  async loadBoard(): Promise<void> {
+    return new Promise((resolve) => {
+      this.dataApp.getBoard().subscribe((board) => {
+        if (board) {
+          this.board = board;
+          this.generateBoardVerify();
+          resolve();
+          return;
+        }
+        const boardStorage = this.dataApp.getStorage('board') as BingoCell[][];
+        if (boardStorage) {
+          this.board = boardStorage;
+          this.generateBoardVerify();
+          resolve();
+        }
+      });
+    });
+  }
 
   generateBoardVerify(): void {
     this.boardVerify = this.board.map((row) =>
