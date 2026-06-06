@@ -37,7 +37,7 @@ export class RoomService {
     }
 
     updateRoomUser(updateRoom: any): Observable<ResponseServicesModel<RoomModel>> {
-        return this.http.post<ResponseServicesModel<RoomModel>>(`${environment.apiUrl}/rooms/pause`, updateRoom);
+        return this.http.post<ResponseServicesModel<RoomModel>>(`${environment.apiUrl}/rooms/updateRoomUser`, updateRoom);
     }
 
     getRoomSuscription(roomCode: string): Observable<any> {

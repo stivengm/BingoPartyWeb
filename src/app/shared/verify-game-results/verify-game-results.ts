@@ -254,6 +254,16 @@ export class VerifyGameResults implements OnInit, OnChanges {
   }
 
   resumeRoom() {
+    let resumeRoom: UpdateGameModel = {
+      roomId: this.room.id,
+      playerId: this.player.id,
+      status: statusGameEnum.Playing,
+      board: this.board
+    }
 
+    // Reanudar juego
+    this.roomService.updateRoomUser(resumeRoom).subscribe((isPauseGame) => {
+      this.dataApp.setStatusGame(statusGameEnum.Playing);
+    });
   }
 }
