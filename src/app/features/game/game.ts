@@ -63,9 +63,11 @@ export class Game implements OnInit {
   ngOnInit(): void {
     this.dataApp.getIsViewInitialGame().subscribe((value) => {
       this.isViewInitialGame = value;
-      // Juego iniciado por primera vez
       if (!this.isViewInitialGame) {
         this.dataApp.setStatusGame(statusGameEnum.Playing);
+        if (this.player?.isHost && !this.generateBallInterval && this.room?.status === statusGameEnum.Playing) {
+          this.startGenerateBalls(0);
+        }
       }
       this.cdr.detectChanges();
     });
@@ -142,15 +144,8 @@ export class Game implements OnInit {
           this.isWinnerGame = false;
           this.isValidateBoard = false;
 
-          if (this.player.isHost && !this.generateBallInterval) {
-            const remainingMs = Math.max(
-              0,
-              updateRoom.nextBallAt - Date.now()
-            );
-
-            this.startGenerateBalls(
-              remainingMs
-            );
+          if (this.player.isHost && !this.generateBallInterval && !this.isViewInitialGame) {
+            this.startGenerateBalls(0);
           }
 
           if (updateRoom.nextBallAt && updateRoom.nextBallAt <= Date.now()) {
