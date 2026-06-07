@@ -9,12 +9,14 @@ import { RoomService } from '../../core/services/room.service';
 import { CreateRoomModel } from '../../core/models/create_room.model';
 import { Player } from '../../core/models/player.model';
 import { ResponseServicesModel } from '../../core/models/response_services.model';
+import { Avatar } from '../../shared/avatar/bingo';
 
 @Component({
   selector: 'app-create-room',
   imports: [
     CommonModule,
     Header,
+    Avatar,
     ReactiveFormsModule,
     NgClass
 ],

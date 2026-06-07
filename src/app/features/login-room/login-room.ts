@@ -7,11 +7,13 @@ import { RoomService } from '../../core/services/room.service';
 import { JoinRoomModel } from '../../core/models/join_room.model';
 import { errorModal } from '../../utils/modals';
 import { RoomModel } from '../../core/models/room.model';
+import { Avatar } from '../../shared/avatar/bingo';
 
 @Component({
   selector: 'app-login-room',
   imports: [
     Header,
+    Avatar,
     ReactiveFormsModule
   ],
   templateUrl: './login-room.html',
@@ -22,22 +24,6 @@ export class LoginRoom implements OnInit {
   room: RoomModel = {} as RoomModel;
   public roomControl = new FormControl('');
 
-  listAvatares = [
-    'astronauta_1',
-    'astronauta_2',
-    'gato',
-    'leon',
-    'perro',
-    'pirata_1',
-    'pirata_2',
-    'reina',
-    'rey',
-    'robot',
-    'vaca'
-  ];
-
-  avatarSelected = "";
-
   public keys: string[] = [
     '1', '2', '3',
     '4', '5', '6',
@@ -45,6 +31,8 @@ export class LoginRoom implements OnInit {
     'CLEAN', '0', 'DEL'
   ];
 
+
+  avatarSelected = "";
 
   constructor(
     private dataApp: DataAppService,
@@ -55,8 +43,6 @@ export class LoginRoom implements OnInit {
 
   ngOnInit() {
     this.getPlayer();
-
-    this.avatarSelected = this.listAvatares[Math.floor(Math.random() * this.listAvatares.length)];
   }
 
   getPlayer() {
