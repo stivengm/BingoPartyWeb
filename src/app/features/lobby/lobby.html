@@ -31,7 +31,9 @@
         <div class="section_all_players_online">
             @for (playerOnline of playersOnline; track $index) {
                 <div class="player_account" [ngClass]="{'plater': playerOnline.id == player.id }">
-                    <div class="img_profile"></div>
+                    <div class="img_profile">
+                        <img class="avatar" [src]="'assets/avatares/' + playerOnline.avatar + '.png'" [alt]="'Avatar ' + playerOnline.avatar">
+                    </div>
                     <p class="player_name">{{ playerOnline.id == player.id ? 'Tú' : playerOnline.name }}</p>
                 </div>
             }

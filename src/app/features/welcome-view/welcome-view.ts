@@ -71,7 +71,8 @@ export class WelcomeView implements OnInit {
     const player: Player = {
       id: "123",
       name: alias ?? "",
-      isHost: isHost
+      isHost: isHost,
+      avatar: ""
     }
 
     this.dataApp.setPlayer(player);

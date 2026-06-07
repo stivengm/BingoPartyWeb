@@ -101,9 +101,10 @@ export class LoginRoom implements OnInit {
   joinRoom() {
     let joinRoom: JoinRoomModel = {
       roomId: this.roomControl.value ?? "",
-      playerName: this.player.name
+      playerName: this.player.name,
+      avatar: this.avatarSelected
     }
-
+    
     this.roomService.joinRoom(joinRoom).subscribe({
       next: (joinPlayer: any) => {
 
