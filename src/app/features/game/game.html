@@ -1,8 +1,9 @@
 <app-header></app-header>
 
 <app-circle-count-down
+  [paused]="isValidateBoard"
   [seconds]="timerChangeBall"
-  [paused]="isValidateBoard">
+  [nextBallAt]="room.nextBallAt">
 </app-circle-count-down>
 
 <div class="content_game">

@@ -12,6 +12,7 @@ export interface RoomModel {
   secondsBalls: number;
   status: 'waiting' | 'playing' | 'finished';
   player: Player;
+  nextBallAt: any;
 
 
 

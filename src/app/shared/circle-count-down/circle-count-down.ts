@@ -1,4 +1,12 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, signal } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  signal
+} from '@angular/core';
+
 import { DataAppService } from '../../core/services/data-app.service';
 import { RoomService } from '../../core/services/room.service';
 import { RoomModel } from '../../core/models/room.model';
@@ -14,6 +22,7 @@ export class CircleCountDown implements OnInit, OnChanges {
   @Input() paused = false;
   @Input() seconds = 10;
   @Input() trigger = 0;
+  @Input() nextBallAt: number = 0;
 
   isViewInfoBall = false;
 
@@ -21,7 +30,6 @@ export class CircleCountDown implements OnInit, OnChanges {
   timer = signal(0);
 
   interval!: ReturnType<typeof setInterval>;
-  restartInterval!: ReturnType<typeof setInterval>;
 
   radius = 54;
   circumference = 2 * Math.PI * this.radius;
@@ -59,7 +67,7 @@ export class CircleCountDown implements OnInit, OnChanges {
       this.isViewInfoBall = !value;
 
       if (this.isViewInfoBall && !this.paused) {
-        this.startCounterCycle();
+        this.start();
       }
     });
   }
@@ -68,74 +76,94 @@ export class CircleCountDown implements OnInit, OnChanges {
     if (changes['paused']) {
 
       if (this.paused) {
-        this.stopCounterCycle();
-      } else if (this.isViewInfoBall) {
-        this.startCounterCycle();
+        this.stopCounter();
+      } else {
+        this.start();
       }
+    }
+
+    if (changes['nextBallAt'] && !this.paused && this.nextBallAt) {
+      this.start();
     }
   }
 
-  startCounterCycle(): void {
-    this.stopCounterCycle();
-    this.start();
-    this.restartInterval = setInterval(() => {
-      if (!this.paused) {
-        this.start();
-      }
-    }, (this.seconds + 0.5) * 1000);
-  }
+  private getRemainingSeconds(): number {
+    if (!this.nextBallAt) {
+      return this.seconds;
+    }
+    return Math.max(
+      0,
+      Math.ceil(
+        (this.nextBallAt - Date.now()) / 1000
+      )
+    );
 
-  stopCounterCycle(): void {
-    clearInterval(this.interval);
-    clearInterval(this.restartInterval);
   }
 
   start(): void {
-    clearInterval(this.interval);
-    let current = this.seconds;
+    this.stopCounter();
+    let current = this.getRemainingSeconds();
+    if (current <= 0 && this.nextBallAt && this.nextBallAt <= Date.now()) {
+      current = this.seconds;
+    }
     this.timer.set(current);
-    this.progress.set(100);
+    this.progress.set((current / this.seconds) * 100);
 
     this.interval = setInterval(() => {
       if (this.paused) {
         clearInterval(this.interval);
         return;
       }
-      current--;
-      this.timer.set(current);
-      const percentage = (current / this.seconds) * 100;
-      this.progress.set(percentage);
-      if (current <= 0) {
+      const remaining = this.getRemainingSeconds();
+      this.timer.set(remaining);
+      this.progress.set(
+        (remaining / this.seconds) * 100
+      );
+
+      if (remaining <= 0) {
+
         clearInterval(this.interval);
       }
-    }, 1000);
+
+    }, 250);
+
+  }
+
+  stopCounter(): void {
+    clearInterval(this.interval);
   }
 
   getStrokeOffset(): number {
-    return this.circumference - (this.progress() / 100) * this.circumference;
+    return (
+      this.circumference -
+      (this.progress() / 100) *
+      this.circumference
+    );
   }
 
   getCalledBalls(roomId: string): void {
-    this.roomService.getCalledBalls(roomId).subscribe((balls: any[]) => {
-      if (!balls) {
-        this.lastThreeBalls = [];
-        return;
-      }
-
-      this.lastThreeBalls = balls.slice(-3).reverse();
-    });
+    this.roomService
+      .getCalledBalls(roomId)
+      .subscribe((balls: any[]) => {
+        if (!balls) {
+          this.lastThreeBalls = [];
+          return;
+        }
+        this.lastThreeBalls = balls.slice(-3).reverse();
+      });
   }
 
   getCurrentBall(roomId: string): void {
-    this.roomService.getCurrentBall(roomId).subscribe((currentBall: any) => {
-      if (!currentBall) {
-        return;
-      }
-      this.currentBall = {
-        letter: currentBall.letter,
-        number: currentBall.number
-      };
-    });
+    this.roomService
+      .getCurrentBall(roomId)
+      .subscribe((currentBall: any) => {
+        if (!currentBall) {
+          return;
+        }
+        this.currentBall = {
+          letter: currentBall.letter,
+          number: currentBall.number
+        };
+      });
   }
-
 }

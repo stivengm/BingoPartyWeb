@@ -42,6 +42,8 @@ export class Game implements OnInit {
   calledBalls: any;
   allBallsCalled: any;
   boardId: number = 0;
+  private lastRoomStatus: string | null = null;
+  private generateBallTimeout: any;
 
   statusGame = "";
 
@@ -84,27 +86,6 @@ export class Game implements OnInit {
 
     this.dataApp.getStatusGame().subscribe((val) => {
       this.statusGame = val;
-      if (this.player.isHost && val === statusGameEnum.Playing) {
-        const generateBall: GenerateBallModel = {
-          roomId: this.room.id,
-          playerId: this.player.id
-        };
-
-        const generate = () => {
-          this.roomService.generateBallService(generateBall).subscribe((isGenerateBall) => {
-            if (isGenerateBall.code != "GB001") {
-              errorModal({ title: isGenerateBall.message });
-              return;
-            }
-          });
-        };
-
-        generate();
-
-        this.generateBallInterval = setInterval(() => {
-          generate();
-        }, (this.timerChangeBall + 0.5) * 1000);
-      }
     });
 
     this.dataApp.getRoom().subscribe((room) => {
@@ -148,33 +129,107 @@ export class Game implements OnInit {
   getRoomInGame() {
     this.roomService.getRoomSuscription(this.room.id).subscribe((updateRoom: any) => {
 
-      if (updateRoom != null && updateRoom.status === statusGameEnum.Paused) {
-        this.isWinnerGame = false;
-        this.isValidateBoard = true;
+      if (!updateRoom) return;
 
-        // Detener generación de balotas
-        if (this.generateBallInterval) {
-          clearInterval(this.generateBallInterval);
-          this.generateBallInterval = null;
+      const statusChanged = updateRoom.status !== this.lastRoomStatus;
+
+      this.room = updateRoom;
+
+      if (statusChanged) {
+        this.lastRoomStatus = updateRoom.status;
+
+        if (updateRoom.status === statusGameEnum.Playing) {
+          this.isWinnerGame = false;
+          this.isValidateBoard = false;
+
+          if (this.player.isHost && !this.generateBallInterval) {
+            const remainingMs = Math.max(
+              0,
+              updateRoom.nextBallAt - Date.now()
+            );
+
+            this.startGenerateBalls(
+              remainingMs
+            );
+          }
+
+          if (updateRoom.nextBallAt && updateRoom.nextBallAt <= Date.now()) {
+            updateRoom.nextBallAt = Date.now() + this.timerChangeBall * 1000;
+          }
         }
 
-        this.boardId = updateRoom.gameBoardType;
-        this.calledBalls = updateRoom.calledBalls;
-        this.allBallsCalled = this.buildVerifyBalls(this.calledBalls);
+        if (updateRoom != null && updateRoom.status === statusGameEnum.Paused) {
+          this.isWinnerGame = false;
+          this.isValidateBoard = true;
 
-        this.boardLastUpdateGame = updateRoom.boardLastUpdateGame;
-        this.playerLastUpdateGame = updateRoom.playerLastUpdateGame;
-        this.cdr.detectChanges();
+          this.stopGenerateBalls();
+
+          this.boardId = updateRoom.gameBoardType;
+          this.calledBalls = updateRoom.calledBalls;
+          this.allBallsCalled = this.buildVerifyBalls(this.calledBalls);
+
+          this.boardLastUpdateGame = updateRoom.boardLastUpdateGame;
+          this.playerLastUpdateGame = updateRoom.playerLastUpdateGame;
+        }
+
+        if (updateRoom != null && updateRoom.status === statusGameEnum.Finished) {
+          this.isValidateBoard = false;
+          this.isWinnerGame = true;
+
+          console.log("Ya hay un ganador!");
+        }
       }
 
-      if (updateRoom != null && updateRoom.status === statusGameEnum.Finished) {
-        this.isValidateBoard = false;
-        this.isWinnerGame = true;
-
-        console.log("Ya hay un ganador!");
-        this.cdr.detectChanges();
-      }
+      this.cdr.detectChanges();
     });
+  }
+
+  private startGenerateBalls(remainingMs?: number): void {
+    if (!this.player.isHost) {
+      return;
+    }
+
+    this.stopGenerateBalls();
+
+    const generateBall: GenerateBallModel = {
+      roomId: this.room.id,
+      playerId: this.player.id
+    };
+
+    const generate = () => {
+      this.roomService
+        .generateBallService(generateBall)
+        .subscribe();
+    };
+
+    const delay =
+      remainingMs ??
+      (this.timerChangeBall * 1000);
+
+    console.log(
+      'PRIMERA BOLA EN',
+      delay,
+      'ms'
+    );
+
+    this.generateBallTimeout = setTimeout(() => {
+      generate();
+      this.generateBallInterval = setInterval(() => {
+        generate();
+      }, this.timerChangeBall * 1000);
+    }, delay);
+  }
+
+  private stopGenerateBalls(): void {
+    if (this.generateBallTimeout) {
+      clearTimeout(this.generateBallTimeout);
+      this.generateBallTimeout = null;
+    }
+
+    if (this.generateBallInterval) {
+      clearInterval(this.generateBallInterval);
+      this.generateBallInterval = null;
+    }
   }
 
   private buildVerifyBalls(
