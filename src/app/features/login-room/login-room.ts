@@ -7,7 +7,7 @@ import { RoomService } from '../../core/services/room.service';
 import { JoinRoomModel } from '../../core/models/join_room.model';
 import { errorModal } from '../../utils/modals';
 import { RoomModel } from '../../core/models/room.model';
-import { Avatar } from '../../shared/avatar/bingo';
+import { Avatar } from '../../shared/avatar/avatar';
 
 @Component({
   selector: 'app-login-room',
@@ -30,9 +30,6 @@ export class LoginRoom implements OnInit {
     '7', '8', '9',
     'CLEAN', '0', 'DEL'
   ];
-
-
-  avatarSelected = "";
 
   constructor(
     private dataApp: DataAppService,
@@ -88,7 +85,7 @@ export class LoginRoom implements OnInit {
     let joinRoom: JoinRoomModel = {
       roomId: this.roomControl.value ?? "",
       playerName: this.player.name,
-      avatar: this.avatarSelected
+      avatar: this.player.avatar
     }
     
     this.roomService.joinRoom(joinRoom).subscribe({

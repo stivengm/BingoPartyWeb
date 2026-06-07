@@ -9,7 +9,7 @@ import { RoomService } from '../../core/services/room.service';
 import { CreateRoomModel } from '../../core/models/create_room.model';
 import { Player } from '../../core/models/player.model';
 import { ResponseServicesModel } from '../../core/models/response_services.model';
-import { Avatar } from '../../shared/avatar/bingo';
+import { Avatar } from '../../shared/avatar/avatar';
 
 @Component({
   selector: 'app-create-room',
@@ -96,7 +96,8 @@ export class CreateRoom {
       hostName: this.player.name,
       gameBoardType: this.idBoardType,
       secondsBalls: parseInt(this.timer.value!.toString()) ?? 10,
-      gameType: this.idGameType
+      gameType: this.idGameType,
+      avatar: this.player.avatar
     }
 
     this.roomService.createRoom(createRoom).subscribe((respCreateRoom: ResponseServicesModel<RoomModel>) => {

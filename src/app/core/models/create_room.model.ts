@@ -3,4 +3,5 @@ export interface CreateRoomModel {
     gameBoardType: number;
     secondsBalls: number;
     gameType: number;
+    avatar: string;
 }

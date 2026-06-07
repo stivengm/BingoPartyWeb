@@ -1,8 +1,31 @@
 <div class="section_avatar">
     <div class="avatar">
         <img class="img_avatar" [src]="'assets/avatares/' + avatarSelected + '.png'" [alt]="'Avatar' + avatarSelected">
-        <div class="btn_change">
+        <div class="btn_change" (click)="openModal()">
             <img src="assets/icons/pencil.svg" alt="">
         </div>
     </div>
 </div>
+
+@if (showModal) {
+    <div class="modal_overlay" (click)="closeModal()">
+        <div class="modal_content" (click)="$event.stopPropagation()">
+            <div class="modal_header">
+                <h2>Seleccionar Avatar</h2>
+                <button class="btn_close" (click)="closeModal()">
+                    <img src="assets/icons/remove.svg" alt="Cerrar">
+                </button>
+            </div>
+            <div class="modal_body">
+                @for (avatar of listAvatares; track avatar) {
+                    <div class="avatar_item" [class.selected]="tempAvatarSelected === avatar" (click)="selectAvatar(avatar)">
+                        <img [src]="'assets/avatares/' + avatar + '.png'" [alt]="avatar">
+                    </div>
+                }
+            </div>
+            <div class="modal_footer">
+                <button class="btn primary_button" (click)="confirmAvatar()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+}
