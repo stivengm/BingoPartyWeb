@@ -38,6 +38,11 @@ jobs:
       - name: Build app to PRODUCCIÓN
         run: npm run build -- --base-href=/BingoPartyWeb/
 
+      # GitHub Pages no conoce las rutas de Angular: al recargar /lobby devuelve 404.
+      # Servir index.html como 404.html hace que Angular resuelva la ruta.
+      - name: SPA fallback (404.html)
+        run: cp dist/BingoPartyWeb/browser/index.html dist/BingoPartyWeb/browser/404.html
+
       # Deploy to GitHub Pages
       - name: Deploy to Pages
         uses: crazy-max/ghaction-github-pages@v5.0.0
