@@ -90,19 +90,29 @@ export class CreateRoom {
       return;
     }
 
+    const seconds = parseInt(this.timer.value?.toString() ?? '');
+    const secondsBalls = Number.isNaN(seconds) ? 10 : Math.min(Math.max(seconds, 3), 99);
+    this.timer.setValue(secondsBalls.toString());
+
     this.dataApp.setIsLoader(true);
 
     let createRoom: CreateRoomModel = {
       hostName: this.player.name,
       gameBoardType: this.idBoardType,
-      secondsBalls: parseInt(this.timer.value!.toString()) ?? 10,
+      secondsBalls,
       gameType: this.idGameType,
       avatar: this.player.avatar
     }
 
-    this.roomService.createRoom(createRoom).subscribe((respCreateRoom: ResponseServicesModel<RoomModel>) => {
+    this.roomService.createRoom(createRoom).subscribe({
+      error: (error) => {
+        errorModal({ title: error?.error?.message ?? "Error interno del servidor" });
+        this.dataApp.setIsLoader(false);
+      },
+      next: (respCreateRoom: ResponseServicesModel<RoomModel>) => {
       if (respCreateRoom.code != "CR001") {
         errorModal({ title: respCreateRoom.message ?? "Ha ocurrido un error"});
+        this.dataApp.setIsLoader(false);
         return;
       }
 
@@ -112,6 +122,7 @@ export class CreateRoom {
       this.dataApp.setIsLoader(false);
 
       this.dataApp.goToPage("/lobby");
+      }
     });
   }
 

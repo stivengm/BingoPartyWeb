@@ -1,4 +1,5 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Header } from '../../shared/layout/header/header';
 import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
 import { CountDownOverlayGame } from '../../shared/count-down-overlay-game/count-down-overlay-game';
@@ -30,7 +31,10 @@ import { Winner } from '../../shared/winner/winner';
   templateUrl: './game.html',
   styleUrl: './game.scss',
 })
-export class Game implements OnInit {
+export class Game implements OnInit, OnDestroy {
+
+  private destroyRef = inject(DestroyRef);
+  isSendingBingo = false;
 
   private generateBallInterval: any;
 
@@ -61,7 +65,15 @@ export class Game implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.dataApp.getIsViewInitialGame().subscribe((value) => {
+    // Cada partida nueva debe iniciar con su cuenta regresiva
+    this.dataApp.setIsViewInitialGame(true);
+
+    if (!this.dataApp.getCurrentRoom() && !this.dataApp.getStorage('room')) {
+      this.dataApp.goToPage('/welcome_view');
+      return;
+    }
+
+    this.dataApp.getIsViewInitialGame().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       this.isViewInitialGame = value;
       if (!this.isViewInitialGame) {
         this.dataApp.setStatusGame(statusGameEnum.Playing);
@@ -72,7 +84,7 @@ export class Game implements OnInit {
       this.cdr.detectChanges();
     });
 
-    this.dataApp.getBoard().subscribe((board) => {
+    this.dataApp.getBoard().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((board) => {
       if (board) {
         this.board = board;
         return;
@@ -86,11 +98,11 @@ export class Game implements OnInit {
       }
     });
 
-    this.dataApp.getStatusGame().subscribe((val) => {
+    this.dataApp.getStatusGame().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
       this.statusGame = val;
     });
 
-    this.dataApp.getRoom().subscribe((room) => {
+    this.dataApp.getRoom().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((room) => {
       if (room != null) {
         this.room = room;
         this.timerChangeBall = this.room.secondsBalls;
@@ -108,7 +120,7 @@ export class Game implements OnInit {
       this.dataApp.setRoom(romStorage);
     });
 
-    this.dataApp.getPlayer().subscribe((player: Player) => {
+    this.dataApp.getPlayer().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((player: Player) => {
       if (player != null) {
         this.player = player;
         return;
@@ -129,7 +141,7 @@ export class Game implements OnInit {
   }
 
   getRoomInGame() {
-    this.roomService.getRoomSuscription(this.room.id).subscribe((updateRoom: any) => {
+    this.roomService.getRoomSuscription(this.room.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((updateRoom: any) => {
 
       if (!updateRoom) return;
 
@@ -143,14 +155,12 @@ export class Game implements OnInit {
         if (updateRoom.status === statusGameEnum.Playing) {
           this.isWinnerGame = false;
           this.isValidateBoard = false;
+          this.isSendingBingo = false;
 
           if (this.player.isHost && !this.generateBallInterval && !this.isViewInitialGame) {
             this.startGenerateBalls(0);
           }
 
-          if (updateRoom.nextBallAt && updateRoom.nextBallAt <= Date.now()) {
-            updateRoom.nextBallAt = Date.now() + this.timerChangeBall * 1000;
-          }
         }
 
         if (updateRoom != null && updateRoom.status === statusGameEnum.Paused) {
@@ -170,8 +180,9 @@ export class Game implements OnInit {
         if (updateRoom != null && updateRoom.status === statusGameEnum.Finished) {
           this.isValidateBoard = false;
           this.isWinnerGame = true;
+          this.stopGenerateBalls();
 
-          console.log("Ya hay un ganador!");
+          this.playerLastUpdateGame = updateRoom.playerLastUpdateGame ?? this.playerLastUpdateGame;
         }
       }
 
@@ -194,18 +205,12 @@ export class Game implements OnInit {
     const generate = () => {
       this.roomService
         .generateBallService(generateBall)
-        .subscribe();
+        .subscribe({ error: (err) => console.error('Error generando bola', err) });
     };
 
     const delay =
       remainingMs ??
       (this.timerChangeBall * 1000);
-
-    console.log(
-      'PRIMERA BOLA EN',
-      delay,
-      'ms'
-    );
 
     this.generateBallTimeout = setTimeout(() => {
       generate();
@@ -247,7 +252,17 @@ export class Game implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.stopGenerateBalls();
+  }
+
   validateBoard() {
+    if (this.isSendingBingo || this.isValidateBoard || this.isViewInitialGame || this.isWinnerGame) {
+      return;
+    }
+
+    this.isSendingBingo = true;
+
     let pauseRoom: UpdateGameModel = {
       roomId: this.room.id,
       playerId: this.player.id,
@@ -256,8 +271,11 @@ export class Game implements OnInit {
     }
 
     // Pausar juego
-    this.roomService.updateRoomUser(pauseRoom).subscribe((isPauseGame) => {
-      console.log(isPauseGame);
+    this.roomService.updateRoomUser(pauseRoom).subscribe({
+      error: () => {
+        this.isSendingBingo = false;
+        errorModal({ title: "No se pudo cantar el bingo, intenta de nuevo." });
+      }
     });
   }
 

@@ -74,6 +74,7 @@ export class LoginRoom implements OnInit {
         this.roomControl.setValue('');
         break;
       default:
+        if (currentValue.length >= 6) break;
         this.roomControl.setValue(
           currentValue + key
         );
@@ -82,8 +83,17 @@ export class LoginRoom implements OnInit {
   }
 
   joinRoom() {
+    const roomId = (this.roomControl.value ?? '').trim();
+
+    if (roomId.length === 0) {
+      errorModal({ title: "Por favor ingresa el código de la sala." });
+      return;
+    }
+
+    this.dataApp.setIsLoader(true);
+
     let joinRoom: JoinRoomModel = {
-      roomId: this.roomControl.value ?? "",
+      roomId,
       playerName: this.player.name,
       avatar: this.player.avatar
     }
@@ -95,6 +105,7 @@ export class LoginRoom implements OnInit {
           errorModal({
             title: joinPlayer.message ?? "Ha ocurrido un error"
           });
+          this.dataApp.setIsLoader(false);
           return;
         }
 

@@ -27,7 +27,23 @@ export class DataAppService {
             return null;
         }
 
-        return JSON.parse(data) as T;
+        try {
+            return JSON.parse(data) as T;
+        } catch {
+            return null;
+        }
+    }
+
+    public removeStorage(...keys: string[]) {
+        keys.forEach(key => sessionStorage.removeItem(key));
+    }
+
+    public resetGameState() {
+        this.removeStorage('room', 'board');
+        this.$room.next(null);
+        this.$board.next(null);
+        this.$isViewInitialGame.next(true);
+        this.$statusGame.next('waiting');
     }
 
     public clearStorage() {
@@ -123,11 +139,11 @@ export class DataAppService {
     private $currentBall = new BehaviorSubject<string>("waiting");
 
     public setCurrentBall(val: string): void {
-        this.$statusGame.next(val);
+        this.$currentBall.next(val);
     }
 
     public getCurrentBall(): Observable<string> {
-        return this.$statusGame.asObservable();
+        return this.$currentBall.asObservable();
     }
     //#endregion
 

@@ -87,7 +87,7 @@ export class Lobby implements OnInit {
   }
 
   getPlayersRoom() {
-    this.roomService.getPlayers(this.room.id).subscribe((players: any[]) => {
+    this.roomService.getPlayers(this.room.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((players: any[]) => {
       if (this.player?.id) {
         players.sort((a, b) => {
           if (a.id === this.player.id) {
@@ -100,7 +100,7 @@ export class Lobby implements OnInit {
           return 0;
         });
       }
-      this.playersOnline = players;
+      this.playersOnline = [...players];
       this.cdr.detectChanges();
     });
   }
@@ -150,12 +150,20 @@ export class Lobby implements OnInit {
 
   getRoomInLobby() {
     this.roomService.getRoomSuscription(this.room.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((room: any) => {
+      if (!room) return;
       this.room = room;
-      if (room != null && room.status === statusGameEnum.Playing) {
-        console.log('El juego inició');
+      if (room.status === statusGameEnum.Playing) {
         this.dataApp.goToPage('/game_curse');
       }
     });
+  }
+
+  async copyCode() {
+    try {
+      await navigator.clipboard.writeText(this.room.id);
+    } catch {
+      return;
+    }
   }
 
   goToPlay() {

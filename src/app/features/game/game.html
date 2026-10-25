@@ -12,7 +12,7 @@
     </div>
 
     <div class="sections_actions">
-        <button class="btn primary_button" (click)="validateBoard()">¡Cantar Bingo!</button>
+        <button class="btn primary_button" [disabled]="isSendingBingo || isValidateBoard || isViewInitialGame" (click)="validateBoard()">¡Cantar Bingo!</button>
     </div>
 </div>
 
@@ -33,5 +33,5 @@
 }
 
 @if (isWinnerGame) {
-    <app-winner></app-winner>
+    <app-winner [winnerName]="playerLastUpdateGame?.name ?? ''"></app-winner>
 }
