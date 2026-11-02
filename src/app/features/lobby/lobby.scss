@@ -1,8 +1,8 @@
 .content_lobby {
-    padding: 20px;
+    padding: 20px 16px calc(96px + env(safe-area-inset-bottom));
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 24px;
     .section_code_room {
         border: 2px solid var(--primaryColor);
         border-radius: 12px;
@@ -36,11 +36,15 @@
             .code {
                 margin: 0;
                 font-weight: 900;
-                font-size: 40px;
+                font-size: clamp(28px, 9vw, 40px);
                 color: var(--colorTextWeight);
             }
             .primary_button {
                 z-index: 10;
+                width: auto;
+                height: clamp(40px, 11vw, 48px);
+                font-size: clamp(14px, 4vw, 18px);
+                padding: 0 16px;
             }
         }
     }
@@ -122,11 +126,18 @@
     .actions_buttons {
         position: fixed;
         width: 100%;
-        bottom: 20px;
-        left: 0;
+        max-width: 560px;
+        bottom: calc(16px + env(safe-area-inset-bottom));
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0 16px;
+        box-sizing: border-box;
+        z-index: 15;
         display: flex;
         justify-content: center;
         .primary_button {
+            width: 100%;
+            justify-content: center;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -165,4 +176,9 @@
             }
         }
     }
+}
+
+.physical_info {
+    margin: 0;
+    color: var(--colorText);
 }

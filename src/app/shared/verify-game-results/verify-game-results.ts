@@ -1,16 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ChangeDetectorRef, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-
-import { DataAppService } from '../../core/services/data-app.service';
 
 import { Player } from '../../core/models/player.model';
 import { BingoCell } from '../../core/models/bingo_cell.model';
 import { VerifyBall, VerifyCell } from '../../core/models/verify_cell.model';
 import { RoomService } from '../../core/services/room.service';
-import { UpdateGameModel } from '../../core/models/update_game.model';
-import { statusGameEnum } from '../../core/models/status_game.model';
-import { RoomModel } from '../../core/models/room.model';
+import { errorModal } from '../../utils/modals';
 
 @Component({
   selector: 'app-verify-game-results',
@@ -20,45 +16,28 @@ import { RoomModel } from '../../core/models/room.model';
   templateUrl: './verify-game-results.html',
   styleUrl: './verify-game-results.scss',
 })
-export class VerifyGameResults implements OnInit, OnChanges {
+export class VerifyGameResults implements OnChanges, OnDestroy {
 
   @Input() boardId: number = 0;
   @Input() player: Player = {} as Player;
   @Input() board: BingoCell[][] = [];
+  /** Solo quien cantó el bingo (o el host) confirma el resultado al terminar la animación. */
+  @Input() canResolve = false;
 
-  room: RoomModel = {} as RoomModel;
   boardVerify: VerifyCell[][] = [];
   isFinishedValidation = false;
   isValidBoard: boolean | null = null;
+  isSending = false;
 
   @Input() allBallsCalled: VerifyBall[] = [];
 
   private verificationStarted = false;
+  private destroyed = false;
 
   constructor(
-    private dataApp: DataAppService,
     private roomService: RoomService,
     private cdr: ChangeDetectorRef
   ) {}
-
-  ngOnInit(): void {
-    this.dataApp.getRoom().subscribe((room) => {
-      if (room != null) {
-        this.room = room;
-        return;
-      }
-
-      let romStorage = this.dataApp.getStorage('room') as RoomModel;
-
-      if (romStorage === null) {
-        // TODO: Enviar al welcome porque no existe Room
-        return;
-      };
-      
-      this.room = romStorage;
-      this.dataApp.setRoom(romStorage);
-    });
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
@@ -75,43 +54,8 @@ export class VerifyGameResults implements OnInit, OnChanges {
     }
   }
 
-  loadPlayer(): void {
-    this.dataApp.getPlayer().subscribe((player) => {
-      if (player != null) {
-        this.player = player;
-        return;
-      }
-
-      const playerStorage = this.dataApp.getStorage('player') as Player;
-
-      if (playerStorage === null) {
-        return;
-      }
-
-      this.player = playerStorage;
-
-      this.dataApp.setPlayer(playerStorage);
-
-    });
-  }
-
-  async loadBoard(): Promise<void> {
-    return new Promise((resolve) => {
-      this.dataApp.getBoard().subscribe((board) => {
-        if (board) {
-          this.board = board;
-          this.generateBoardVerify();
-          resolve();
-          return;
-        }
-        const boardStorage = this.dataApp.getStorage('board') as BingoCell[][];
-        if (boardStorage) {
-          this.board = boardStorage;
-          this.generateBoardVerify();
-          resolve();
-        }
-      });
-    });
+  ngOnDestroy(): void {
+    this.destroyed = true;
   }
 
   generateBoardVerify(): void {
@@ -183,6 +127,9 @@ export class VerifyGameResults implements OnInit, OnChanges {
 
       for (const cell of row) {
 
+        // Si el juego se reanudó o terminó antes de acabar la animación, se corta.
+        if (this.destroyed) return;
+
         const ball = this.allBallsCalled.find(
           x => x.id === cell.number
         );
@@ -231,6 +178,8 @@ export class VerifyGameResults implements OnInit, OnChanges {
       }
     }
 
+    if (this.destroyed) return;
+
     this.isValidBoard = !hasErrors;
     this.isFinishedValidation = true;
 
@@ -241,29 +190,17 @@ export class VerifyGameResults implements OnInit, OnChanges {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  goToWin() {
-    let winRoom: UpdateGameModel = {
-      roomId: this.room.id,
-      playerId: this.player.id,
-      status: statusGameEnum.Finished,
-      board: this.board
-    }
+  /** El servidor decide el resultado: gana la partida o se reanuda el juego. */
+  confirm() {
+    if (this.isSending) return;
+    this.isSending = true;
 
-    // Finalizar juego
-    this.roomService.updateRoomUser(winRoom).subscribe((isPauseGame) => {console.log(isPauseGame)});
-  }
-
-  resumeRoom() {
-    let resumeRoom: UpdateGameModel = {
-      roomId: this.room.id,
-      playerId: this.player.id,
-      status: statusGameEnum.Playing,
-      board: this.board
-    }
-
-    // Reanudar juego
-    this.roomService.updateRoomUser(resumeRoom).subscribe((isPauseGame) => {
-      this.dataApp.setStatusGame(statusGameEnum.Playing);
+    this.roomService.resolveClaim().subscribe((resp) => {
+      this.isSending = false;
+      if (resp.code !== 'UR001') {
+        errorModal({ title: resp.message ?? 'Ha ocurrido un error' });
+      }
+      this.cdr.detectChanges();
     });
   }
 }

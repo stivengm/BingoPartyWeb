@@ -64,14 +64,21 @@
         </div>
         @if (isFinishedValidation) {
             <div class="actions_verify_board">
-                @if (isValidBoard) {
-                    <button class="btn primary_button" (click)="goToWin()">
-                        ¡Bingo confirmado!
-                    </button>
+                @if (canResolve) {
+                    @if (isValidBoard) {
+                        <button class="btn primary_button" [disabled]="isSending" (click)="confirm()">
+                            ¡Bingo confirmado!
+                        </button>
+                    } @else {
+                        <button class="btn primary_button danger_button" [disabled]="isSending" (click)="confirm()">
+                            ¡Bingo incompleto!
+                        </button>
+                    }
                 } @else {
-                    <button class="btn primary_button danger_button" (click)="resumeRoom()">
-                        ¡Bingo incompleto!
-                    </button>
+                    <p class="waiting_result">
+                        {{ isValidBoard ? '¡Bingo válido!' : 'Bingo incompleto.' }}
+                        Esperando a {{ player.name }}…
+                    </p>
                 }
             </div>
         }

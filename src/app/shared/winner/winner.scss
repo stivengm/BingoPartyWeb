@@ -1,8 +1,10 @@
 .content_winner {
     width: 100%;
     height: 100vh;
-    position: absolute;
+    height: 100dvh;
+    position: fixed;
     top: 0;
+    left: 0;
     z-index: 99;
     background-color: rgba(var(--secondaryColorWeightRGB), .8);
     padding: 20px;
@@ -11,7 +13,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow-y: auto;
     .modal_winner {
+        max-width: 480px;
+        margin: auto;
         background-color: var(--whiteColor);
         display: flex;
         flex-direction: column;
@@ -24,8 +29,9 @@
         width: 100%;
         .section_winner {
             position: relative;
-            width: 140px;
-            height: 140px;
+            width: clamp(100px, 32vw, 140px);
+            height: clamp(100px, 32vw, 140px);
+            flex-shrink: 0;
             border-radius: 100%;
             background-color: var(--bgActualRoom);
             display: flex;
@@ -58,7 +64,7 @@
                 color: var(--colorTextWeight);
                 margin: 0;
                 font-weight: 900;
-                font-size: 64px;
+                font-size: clamp(40px, 15vw, 64px);
                 text-shadow: 0px 4px 2px #AD9000;
                 text-align: center;
             }
@@ -73,7 +79,12 @@
         .actions_modal_winner {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
+            width: 100%;
+            padding: 0 20px;
+            .btn {
+                width: 100%;
+            }
         }
         .actions_shared {
             display: flex;
@@ -84,4 +95,11 @@
             }
         }
     }
+}
+.content_winner .modal_winner .waiting_host {
+    margin: 0;
+    padding: 0 20px;
+    text-align: center;
+    color: var(--secondaryColor);
+    font-weight: 600;
 }

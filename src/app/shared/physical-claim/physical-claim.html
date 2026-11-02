@@ -1,0 +1,31 @@
+<div class="content_physical_claim">
+    <div class="modal_physical_claim">
+        <div class="header_claim">
+            <h1 class="title_claim">¡BINGO!</h1>
+        </div>
+
+        <div class="body_claim">
+            <p class="text_claim">
+                <strong>{{ player?.name }}</strong> cantó bingo.
+            </p>
+
+            @if (isHost) {
+                <p class="hint_claim">
+                    Revisa su cartón físico con las {{ calledBalls.length }} bolitas que han salido.
+                </p>
+                <div class="called_list">
+                    @for (ball of calledBalls; track ball.number) {
+                        <span class="called_item">{{ ball.letter }}-{{ ball.number }}</span>
+                    }
+                </div>
+                <div class="actions_claim">
+                    <button class="btn primary_button" [disabled]="isSending" (click)="resolve(true)">Es válido</button>
+                    <button class="btn secondary_button" [disabled]="isSending" (click)="resolve(false)">No es válido</button>
+                </div>
+            } @else {
+                <p class="hint_claim">El host está verificando el cartón…</p>
+                <div class="dots"><span></span><span></span><span></span></div>
+            }
+        </div>
+    </div>
+</div>

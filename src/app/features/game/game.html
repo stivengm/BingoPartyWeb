@@ -2,17 +2,64 @@
 
 <app-circle-count-down
   [paused]="isValidateBoard"
-  [seconds]="timerChangeBall"
-  [nextBallAt]="room.nextBallAt">
+  [seconds]="room.secondsBalls"
+  [nextBallAt]="room.nextBallAt"
+  [isManual]="isManual"
+  [isRequesting]="isDrawing">
 </app-circle-count-down>
 
 <div class="content_game">
-    <div class="board_game">
-        <app-tablero-bingo></app-tablero-bingo>
-    </div>
+    @if (room.exhausted && room.status === 'playing') {
+        <div class="alert_exhausted" role="alert">
+            <strong>¡Ya salieron las 75 bolitas!</strong>
+            <span>Verifiquen si hay un ganador.</span>
+        </div>
+    }
+
+    @if (isManual) {
+        <div class="physical_board">
+            <div class="physical_header">
+                <h3>Bolitas que han salido</h3>
+                <span>{{ calledNumbers.size }}/75</span>
+            </div>
+            <div class="numbers_grid">
+                @for (n of numbers; track n) {
+                    <div class="number_item" [class.called]="calledNumbers.has(n)">{{ n }}</div>
+                }
+            </div>
+        </div>
+
+        @if (isHost) {
+            <div class="host_controls">
+                <button class="btn primary_button" [disabled]="isDrawing || isValidateBoard || room.exhausted" (click)="drawBall()">
+                    {{ isDrawing ? 'Sacando…' : 'Sacar bolita' }}
+                </button>
+                <div class="manual_input">
+                    <input
+                        type="number"
+                        min="1"
+                        max="75"
+                        inputmode="numeric"
+                        placeholder="¿Salió otra? (1-75)"
+                        [value]="manualNumber"
+                        (input)="manualNumber = $any($event.target).value"
+                        (keydown.enter)="drawManualBall()">
+                    <button class="btn secondary_button" [disabled]="isDrawing || isValidateBoard || room.exhausted" (click)="drawManualBall()">Registrar</button>
+                </div>
+            </div>
+        }
+    } @else {
+        <div class="board_game">
+            <app-tablero-bingo></app-tablero-bingo>
+        </div>
+    }
 
     <div class="sections_actions">
         <button class="btn primary_button" [disabled]="isSendingBingo || isValidateBoard || isViewInitialGame" (click)="validateBoard()">¡Cantar Bingo!</button>
+
+        @if (isHost && (room.exhausted || isManual)) {
+            <button class="btn_text" [disabled]="isEnding" (click)="endGame()">Finalizar partida sin ganador</button>
+        }
     </div>
 </div>
 
@@ -24,14 +71,23 @@
 
 
 @if (isValidateBoard) {
-    <app-verify-game-results 
-        [boardId]="boardId"
-        [player]="playerLastUpdateGame" 
-        [board]="boardLastUpdateGame"
-        [allBallsCalled]="allBallsCalled">
-    </app-verify-game-results>
+    @if (isManual) {
+        <app-physical-claim
+            [player]="claimant"
+            [isHost]="isHost"
+            [calledBalls]="room.calledBalls">
+        </app-physical-claim>
+    } @else {
+        <app-verify-game-results
+            [boardId]="room.gameBoardType"
+            [player]="claimant ?? player"
+            [board]="room.boardLastUpdateGame ?? []"
+            [canResolve]="canResolveClaim"
+            [allBallsCalled]="allBallsCalled">
+        </app-verify-game-results>
+    }
 }
 
 @if (isWinnerGame) {
-    <app-winner [winnerName]="playerLastUpdateGame.name ?? ''"></app-winner>
+    <app-winner [winnerName]="room.winner?.name ?? ''" [isHost]="isHost"></app-winner>
 }

@@ -4,20 +4,20 @@
     gap: 8px;
     width: 100%;
     background-color: var(--bgCardGameBoard);
-    border-radius: 30px;
-    padding:  20px 20px 20px 20px;
+    border-radius: clamp(18px, 6vw, 30px);
+    padding: clamp(12px, 4vw, 20px);
     box-sizing: border-box;
     .board_letters {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 8px;
+        gap: clamp(4px, 1.6vw, 8px);
         .board_letter {
             aspect-ratio: 1 / 1;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 16px;
-            font-size: 60px;
+            font-size: clamp(26px, 11vw, 60px);
             font-weight: bold;
             color: var(--whiteColor);
             font-family: "BBH-Hegarty", sans-serif;
@@ -29,7 +29,7 @@
 .board_row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
+    gap: clamp(4px, 2vw, 10px);
 }
 
 .board_cell {
@@ -42,8 +42,9 @@
     background: var(--bgCellsItemsBoard);
     border-radius: 6px;
 
-    font-size: 20px;
+    font-size: clamp(13px, 4.6vw, 20px);
     font-weight: bold;
+    box-sizing: border-box;
 
     cursor: pointer;
     user-select: none;
@@ -52,25 +53,16 @@
 }
 
 .board_cell.ingame {
-    border: 5px solid rgb(202, 153, 6) !important;
+    border: clamp(2px, .9vw, 5px) solid rgb(202, 153, 6) !important;
     background-color: rgb(243, 212, 118) !important;
 }
 .board_cell.ingame.marked {
-    border: 5px solid rgba(13, 154, 85, 1) !important;
+    border: clamp(2px, .9vw, 5px) solid rgba(13, 154, 85, 1) !important;
     background-color: rgb(54, 216, 138) !important;
 }
 
 .board_cell.marked {
-    border: 5px solid rgba(208, 31, 30, 1) !important;
+    border: clamp(2px, .9vw, 5px) solid rgba(208, 31, 30, 1) !important;
     background-color: rgb(238, 80, 80) !important;
 }
 
-@media screen and (max-width: 450px) {
-    .board {
-        .board_letters {
-            .board_letter {
-                font-size: 50px;
-            }
-        }
-    }
-}

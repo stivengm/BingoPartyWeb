@@ -8,7 +8,6 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RoomService } from '../../core/services/room.service';
 import { CreateRoomModel } from '../../core/models/create_room.model';
 import { Player } from '../../core/models/player.model';
-import { ResponseServicesModel } from '../../core/models/response_services.model';
 import { Avatar } from '../../shared/avatar/avatar';
 
 @Component({
@@ -104,25 +103,20 @@ export class CreateRoom {
       avatar: this.player.avatar
     }
 
-    this.roomService.createRoom(createRoom).subscribe({
-      error: (error) => {
-        errorModal({ title: error?.error?.message ?? "Error interno del servidor" });
-        this.dataApp.setIsLoader(false);
-      },
-      next: (respCreateRoom: ResponseServicesModel<RoomModel>) => {
-      if (respCreateRoom.code != "CR001") {
-        errorModal({ title: respCreateRoom.message ?? "Ha ocurrido un error"});
-        this.dataApp.setIsLoader(false);
+    this.roomService.createRoom(createRoom).subscribe((resp) => {
+      this.dataApp.setIsLoader(false);
+
+      if (resp.code !== "CR001" || !resp.data) {
+        errorModal({ title: resp.message ?? "Ha ocurrido un error" });
         return;
       }
 
-      this.dataApp.setPlayer(respCreateRoom.data.host);
-      this.room = respCreateRoom.data;
-      this.dataApp.setRoom(this.room!);
-      this.dataApp.setIsLoader(false);
+      const { room, playerId } = resp.data;
+      this.room = room;
+      this.dataApp.setPlayer({ ...this.player, id: playerId, isHost: true });
+      this.dataApp.setRoom(room);
 
       this.dataApp.goToPage("/lobby");
-      }
     });
   }
 
@@ -133,6 +127,5 @@ export class CreateRoom {
 
   selectedBoardType(id: number) {
     this.idBoardType = id;
-    this.room!.bingoBoardId = id;
   }
 }

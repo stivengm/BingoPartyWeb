@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BingoCell } from '../../core/models/bingo_cell.model';
 import { DataAppService } from '../../core/services/data-app.service';
 import { RoomModel } from '../../core/models/room.model';
@@ -9,7 +10,9 @@ import { RoomModel } from '../../core/models/room.model';
   templateUrl: './tablero-bingo.html',
   styleUrl: './tablero-bingo.scss',
 })
-export class TableroBingo {
+export class TableroBingo implements OnInit {
+  private destroyRef = inject(DestroyRef);
+
   @Input() boardId: number = 0;
   @Input() cells: BingoCell[][] | null = null;
   @Input() isViewLetters = true;
@@ -24,7 +27,7 @@ export class TableroBingo {
   constructor(private dataApp: DataAppService) {}
 
   ngOnInit(): void {
-    this.dataApp.getRoom().subscribe((room) => {
+    this.dataApp.getRoom().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((room) => {
       if (room != null) {
         this.boardId = room.gameBoardType;
         return;
@@ -44,7 +47,7 @@ export class TableroBingo {
       return;
     }
 
-    this.dataApp.getBoard().subscribe((board) => {
+    this.dataApp.getBoard().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((board) => {
       if (board) {
         this.board = board;
         // this.boardId = board.boardId;
@@ -132,5 +135,10 @@ export class TableroBingo {
     if (cell.disabled) return;
 
     cell.marked = !cell.marked;
+
+    // Guarda las marcas para no perderlas si se recarga la página.
+    if (!this.cells) {
+      this.dataApp.setBoard(this.board);
+    }
   }
 }

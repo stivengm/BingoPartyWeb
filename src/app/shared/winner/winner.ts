@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { DataAppService } from '../../core/services/data-app.service';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { ConfetiWinner } from '../confeti-winner/confeti-winner';
-import { Router } from '@angular/router';
+import { DataAppService } from '../../core/services/data-app.service';
+import { RoomService } from '../../core/services/room.service';
+import { errorModal } from '../../utils/modals';
 
 @Component({
   selector: 'app-winner',
@@ -11,21 +12,36 @@ import { Router } from '@angular/router';
   templateUrl: './winner.html',
   styleUrl: './winner.scss',
 })
-export class Winner implements OnInit {
+export class Winner {
 
   @Input() winnerName = '';
+  @Input() isHost = false;
 
-  constructor(private router: Router, private dataApp: DataAppService) {}
+  isSending = false;
 
-  ngOnInit() {}
+  constructor(
+    private dataApp: DataAppService,
+    private roomService: RoomService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
+  /** El host reinicia la partida con los mismos jugadores; todos vuelven al lobby. */
   newGame() {
-    this.dataApp.resetGameState();
-    this.router.navigate(["/create_room"]);
+    if (this.isSending) return;
+    this.isSending = true;
+
+    this.roomService.rematch().subscribe((resp) => {
+      this.isSending = false;
+      if (resp.code !== 'UR001') {
+        errorModal({ title: resp.message ?? 'Ha ocurrido un error' });
+      }
+      this.cdr.detectChanges();
+    });
   }
 
   goToHome() {
+    this.roomService.leaveRoom();
     this.dataApp.resetGameState();
-    this.router.navigate(["/welcome_view"]);
+    this.dataApp.goToPage('/welcome_view');
   }
 }

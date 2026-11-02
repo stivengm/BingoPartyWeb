@@ -7,18 +7,29 @@
         
         <div class="section_code">
             <h2 class="code">#{{ room.id }}</h2>
-            <button class="btn primary_button" (click)="copyCode()">Copiar</button>
+            <button class="btn primary_button" (click)="copyCode()">{{ copied ? '¡Copiado!' : 'Copiar' }}</button>
         </div>
     </div>
 
     <div class="section_tarjeton_card_asigned">
-        <div class="header_card_assigned">
-            <h2 class="title_card_asigned">Tu tarjetón asignado</h2>
+        @if (room.gameType === 2) {
+            <div class="header_card_assigned">
+                <h2 class="title_card_asigned">Juego físico</h2>
+            </div>
+            <p class="physical_info">
+                Juega con tu cartón físico. El host irá sacando las bolitas y las verás aquí.
+                Figura a completar:
+            </p>
+            <app-tablero-bingo [cells]="emptyBoard" [isViewLetters]="false" [isBoardDisabled]="true" [boardId]="room.gameBoardType"></app-tablero-bingo>
+        } @else {
+            <div class="header_card_assigned">
+                <h2 class="title_card_asigned">Tu tarjetón asignado</h2>
 
-            <img src="assets/icons/refresh.svg" (click)="generateBingoBoard()" alt="Icono refrescar tarjetón">
-        </div>
+                <img src="assets/icons/refresh.svg" (click)="generateBingoBoard()" alt="Icono refrescar tarjetón">
+            </div>
 
-        <app-tablero-bingo [isViewLetters]="false" [isBoardDisabled]="true" [boardId]="room.gameBoardType"></app-tablero-bingo>
+            <app-tablero-bingo [isViewLetters]="false" [isBoardDisabled]="true" [boardId]="room.gameBoardType"></app-tablero-bingo>
+        }
     </div>
 
     <div class="section_players_lobby">
@@ -42,7 +53,7 @@
 
     @if (player.isHost) {
         <div class="actions_buttons">
-            <button class="btn primary_button" (click)="goToPlay()">
+            <button class="btn primary_button" [disabled]="isStarting" (click)="goToPlay()">
                 <span>Iniciar juego</span>
                 <img class="icon_right" src="assets/icons/arrow-right.svg" alt="Icono flecha a la derecha">
             </button>

@@ -6,14 +6,14 @@
     .info_user {
         .hello_user {
             margin: 0;
-            font-size: 35px;
+            font-size: clamp(26px, 8vw, 35px);
             font-weight: bold;
             text-align: center;
             color: var(--colorText);
         }
         .login_room {
             margin: 0;
-            font-size: 32px;
+            font-size: clamp(22px, 7vw, 32px);
             font-weight: bold;
             text-align: center;
             color: var(--secondaryColor);
@@ -30,8 +30,9 @@
         flex-direction: column;
         gap: 24px;
         .input_id_room {
-            height: 70px;
-            font-size: 28px;
+            height: clamp(54px, 16vw, 70px);
+            font-size: clamp(22px, 7vw, 28px);
+            width: 100%;
             text-align: center;
             color: var(--secondaryColor);
             border: 2px solid var(--colorInputs);
@@ -41,12 +42,12 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             background-color: var(--bgKeyboard);
-            gap: 12px;
+            gap: clamp(8px, 3vw, 12px);
             width: auto;
-            padding: 16px;
+            padding: clamp(10px, 3.5vw, 16px);
             border-radius: 24px;
             .key {
-                height: 60px;
+                height: clamp(48px, 13vw, 60px);
                 border: none;
                 border-radius: 16px;
                 font-size: 20px;

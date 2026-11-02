@@ -43,12 +43,39 @@
     --colorTextSecondaryWeight: #41006F;
 }
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+img {
+    max-width: 100%;
+}
+
+// En pantallas grandes la app se muestra como una columna centrada, tipo móvil.
+app-root {
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0 auto;
+    overflow-x: clip;
+    background-color: var(--backgroundApp);
+}
+
 body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'FontWeb', sans-serif;
-    background-color: var(--backgroundApp);
+    background-color: #EFE4F8;
+    overflow-x: hidden;
 }
 
 
@@ -76,12 +103,18 @@ body {
 
 // BUTTONS
 .btn {
-    height: 60px;
+    height: clamp(48px, 14vw, 60px);
+    max-width: 100%;
     border-radius: 9999px;
     border: 0;
     text-transform: uppercase;
-    font-size: 24px;
+    font-size: clamp(16px, 5.4vw, 24px);
+    font-family: inherit;
     cursor: pointer;
+    &:disabled {
+        opacity: .55;
+        cursor: not-allowed;
+    }
 }
 .primary_button {
     padding: 0 20px;
@@ -90,7 +123,7 @@ body {
     color: var(--primaryColorWeight);
     background-color: var(--primaryColor);
     -webkit-box-shadow: 0px 4px 0px 0px var(--colorTextWeight); 
-    box-shadow: 0px 4px 0px 0px (--colorTextWeight);
+    box-shadow: 0px 4px 0px 0px var(--colorTextWeight);
 }
 .secondary_button {
     padding: 0 20px;

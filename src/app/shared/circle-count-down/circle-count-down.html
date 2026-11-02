@@ -1,5 +1,5 @@
 <div class="section_timer_countdown">
-    @if (isViewInfoBall) {
+    @if (isViewInfoBall && !isManual) {
         <div class="time">
             {{ timer() }}
         </div>
@@ -7,12 +7,12 @@
 
     <div class="header_digital_mode">
         <div class="section_digital_mode">
-            <p>Modo digital</p>
+            <p>{{ isManual ? 'Modo físico' : 'Modo digital' }}</p>
         </div>
     </div>
 
     <div class="countdown">
-        <svg width="140" height="140">
+        <svg viewBox="0 0 140 140">
             <circle
                 class="background"
                 cx="70"
@@ -24,18 +24,25 @@
                 cy="70"
                 [attr.r]="radius"
                 [style.stroke-dasharray]="circumference"
-                [style.stroke-dashoffset]="getStrokeOffset()"/>
+                [style.stroke-dashoffset]="isManual ? 0 : getStrokeOffset()"/>
         </svg>
-        <div class="ball_information">
-            @if (isViewInfoBall) {
+        <div
+            class="ball_information"
+            [class.spinning]="isBallSpinning"
+            [class.reveal]="isRevealing()">
+            @if (isBallSpinning) {
+                <h1 class="number_ball spinner_mark">?</h1>
+            } @else if (isViewInfoBall && currentBall) {
                 <h3 class="letter_ball">{{ currentBall.letter }}</h3>
                 <h1 class="number_ball">{{ currentBall.number }}</h1>
+            } @else if (isViewInfoBall) {
+                <h3 class="letter_ball">¡Listos!</h3>
             }
         </div>
     </div>
 
     <div class="historyCalledBalls">
-        @for (lastBall of lastThreeBalls; track $index) {
+        @for (lastBall of lastThreeBalls; track lastBall.number) {
             <div class="last_ball">
                 <p class="last_ball_info">{{ lastBall.letter }}-{{ lastBall.number }}</p>
             </div>

@@ -69,7 +69,7 @@ export class WelcomeView implements OnInit {
     const alias = this.aliasControl.value;
 
     const player: Player = {
-      id: "123",
+      id: this.player?.id ?? "",
       name: alias ?? "",
       isHost: isHost,
       avatar: ""

@@ -1,6 +1,7 @@
 .timer_initial {
     position: fixed;
     inset: 0;
+    height: 100dvh;
     z-index: 9999;
 
     display: flex;
@@ -11,7 +12,7 @@
 }
 
 .timer_text {
-    font-size: 140px;
+    font-size: clamp(80px, 32vw, 140px);
     font-weight: 800;
     line-height: 1;
 

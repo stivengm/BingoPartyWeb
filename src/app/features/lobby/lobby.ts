@@ -8,8 +8,6 @@ import { BingoCell } from '../../core/models/bingo_cell.model';
 import { RoomService } from '../../core/services/room.service';
 import { CommonModule } from '@angular/common';
 import { errorModal } from '../../utils/modals';
-import { statusGameEnum } from '../../core/models/status_game.model';
-import { UpdateGameModel } from '../../core/models/update_game.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -28,9 +26,16 @@ export class Lobby implements OnInit {
   player: Player = {} as Player;
   room: RoomModel = {} as RoomModel;
 
-  playersOnline: any = [];
+  playersOnline: Player[] = [];
 
   board: BingoCell[][] = [];
+  /** En juego físico se muestra solo la figura a completar, sin números. */
+  emptyBoard: BingoCell[][] = Array.from({ length: 5 }, () =>
+    Array.from({ length: 5 }, () => ({ value: '', disabled: true }))
+  );
+
+  isStarting = false;
+  copied = false;
 
   rangosBoard = {
     b: [1, 15],
@@ -47,60 +52,40 @@ export class Lobby implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.dataApp.getPlayer().subscribe((player) => {
-      if (player != null) {
-        this.player = player;
-        return;
-      }
+    const playerStorage = this.dataApp.getCurrentPlayer() ?? this.dataApp.getStorage('player') as Player | null;
+    const roomStorage = this.dataApp.getCurrentRoom() ?? this.dataApp.getStorage('room') as RoomModel | null;
 
-      let playerStorage = this.dataApp.getStorage('player') as Player;
+    if (!playerStorage || !roomStorage) {
+      this.dataApp.goToPage('/welcome_view');
+      return;
+    }
 
-      if (playerStorage === null) {
-        // TODO: Enviar al welcome porque no existe player
-        return;
-      };
-      
-      this.player = playerStorage;
-      this.dataApp.setPlayer(playerStorage);
+    this.player = playerStorage;
+    this.room = roomStorage;
+    this.dataApp.setPlayer(playerStorage);
+    this.dataApp.setRoom(roomStorage);
+
+    this.dataApp.getPlayer().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((player) => {
+      if (player) this.player = player;
+      this.cdr.detectChanges();
     });
 
-    this.dataApp.getRoom().subscribe((room) => {
-      if (room != null) {
-        this.room = room;
+    if (this.room.gameType !== 2) {
+      this.generateBingoBoard();
+    }
+
+    this.roomService.getRoomSuscription(this.room.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((room) => {
+      this.room = room;
+      this.playersOnline = [...room.players].sort((a, b) => {
+        if (a.id === this.player.id) return -1;
+        if (b.id === this.player.id) return 1;
+        return 0;
+      });
+
+      if (room.status === 'playing') {
+        this.dataApp.goToPage('/game_curse');
         return;
       }
-
-      let romStorage = this.dataApp.getStorage('room') as RoomModel;
-
-      if (romStorage === null) {
-        // TODO: Enviar al welcome porque no existe Room
-        return;
-      };
-
-      this.room = romStorage;
-      this.dataApp.setRoom(romStorage);
-    });
-
-    this.generateBingoBoard();
-    this.getPlayersRoom();
-    this.getRoomInLobby();
-  }
-
-  getPlayersRoom() {
-    this.roomService.getPlayers(this.room.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((players: any[]) => {
-      if (this.player?.id) {
-        players.sort((a, b) => {
-          if (a.id === this.player.id) {
-            return -1;
-          }
-
-          if (b.id === this.player.id) {
-            return 1;
-          }
-          return 0;
-        });
-      }
-      this.playersOnline = [...players];
       this.cdr.detectChanges();
     });
   }
@@ -148,33 +133,28 @@ export class Lobby implements OnInit {
     return numbers;
   }
 
-  getRoomInLobby() {
-    this.roomService.getRoomSuscription(this.room.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((room: any) => {
-      if (!room) return;
-      this.room = room;
-      if (room.status === statusGameEnum.Playing) {
-        this.dataApp.goToPage('/game_curse');
-      }
-    });
-  }
-
   async copyCode() {
     try {
       await navigator.clipboard.writeText(this.room.id);
+      this.copied = true;
+      setTimeout(() => {
+        this.copied = false;
+        this.cdr.detectChanges();
+      }, 2000);
     } catch {
-      return;
+      errorModal({ title: 'No se pudo copiar el código.' });
     }
   }
 
   goToPlay() {
-    let playRoom: UpdateGameModel = {
-      roomId: this.room.id,
-      playerId: this.player.id,
-      status: statusGameEnum.Playing
-    }
-    this.roomService.updateRoom(playRoom).subscribe((isUpdate) => {
-      if (isUpdate.code != "UR001") {
-        errorModal({ title: isUpdate.message ?? "Ha ocurrido un error"});
+    if (this.isStarting) return;
+    this.isStarting = true;
+
+    this.roomService.startGame().subscribe((resp) => {
+      if (resp.code !== 'UR001') {
+        this.isStarting = false;
+        errorModal({ title: resp.message ?? 'Ha ocurrido un error' });
+        this.cdr.detectChanges();
       }
     });
   }

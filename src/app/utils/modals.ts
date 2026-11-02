@@ -17,3 +17,14 @@ export function errorModal({ title = "", html = "" }) {
         title: title
     })
 }
+
+export function infoModal({ title = "", html = "", confirmButtonText = "Entendido" }) {
+    return Swal.fire({
+        icon: "info",
+        title,
+        html,
+        confirmButtonText,
+        confirmButtonColor: "#8333C6",
+        allowOutsideClick: false
+    });
+}

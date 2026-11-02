@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Header } from '../../shared/layout/header/header';
 import { TableroBingo } from '../../shared/tablero-bingo/tablero-bingo';
@@ -7,15 +7,13 @@ import { DataAppService } from '../../core/services/data-app.service';
 import { CircleCountDown } from '../../shared/circle-count-down/circle-count-down';
 import { RoomModel } from '../../core/models/room.model';
 import { VerifyGameResults } from '../../shared/verify-game-results/verify-game-results';
+import { PhysicalClaim } from '../../shared/physical-claim/physical-claim';
 import { RoomService } from '../../core/services/room.service';
 import { Player } from '../../core/models/player.model';
-import { JoinRoomModel } from '../../core/models/join_room.model';
-import { GenerateBallModel } from '../../core/models/generate_ball.model';
-import { statusGameEnum } from '../../core/models/status_game.model';
-import { errorModal } from '../../utils/modals';
-import { UpdateGameModel } from '../../core/models/update_game.model';
+import { errorModal, infoModal } from '../../utils/modals';
 import { BingoCell } from '../../core/models/bingo_cell.model';
-import { CalledBall, statusBall, VerifyBall } from '../../core/models/verify_ball';
+import { Ball } from '../../core/models/ball.model';
+import { statusBall, VerifyBall } from '../../core/models/verify_ball';
 import { Winner } from '../../shared/winner/winner';
 
 @Component({
@@ -26,37 +24,39 @@ import { Winner } from '../../shared/winner/winner';
     CountDownOverlayGame,
     CircleCountDown,
     VerifyGameResults,
+    PhysicalClaim,
     Winner
   ],
   templateUrl: './game.html',
   styleUrl: './game.scss',
 })
-export class Game implements OnInit, OnDestroy {
+export class Game implements OnInit {
 
   private destroyRef = inject(DestroyRef);
-  isSendingBingo = false;
-
-  private generateBallInterval: any;
 
   isViewInitialGame = true;
   player: Player = {} as Player;
-  playerLastUpdateGame: Player = {} as Player;
   board: BingoCell[][] = [];
-  boardLastUpdateGame: BingoCell[][] = [];
-  calledBalls: any;
-  allBallsCalled: any;
-  boardId: number = 0;
-  private lastRoomStatus: string | null = null;
-  private generateBallTimeout: any;
+  room: RoomModel = {} as RoomModel;
 
-  statusGame = "";
-
-  timerChangeBall = 0;
+  /** Bolitas 1-75 con las que se dibuja la verificación. */
+  allBallsCalled: VerifyBall[] = [];
+  /** Tabla de 1 a 75 para comparar con el cartón físico. */
+  numbers = Array.from({ length: 75 }, (_, i) => i + 1);
+  calledNumbers = new Set<number>();
 
   isValidateBoard = false;
   isWinnerGame = false;
+  isSendingBingo = false;
+  isDrawing = false;
+  isEnding = false;
 
-  room: RoomModel = {} as RoomModel;
+  manualNumber = '';
+
+  private hasWarnedExhausted = false;
+  private lastStatus: string | null = null;
+  private lastRound = 0;
+  private initialized = false;
 
   constructor(
     private dataApp: DataAppService,
@@ -64,22 +64,43 @@ export class Game implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    // Cada partida nueva debe iniciar con su cuenta regresiva
-    this.dataApp.setIsViewInitialGame(true);
+  get isManual(): boolean {
+    return this.room.gameType === 2;
+  }
 
-    if (!this.dataApp.getCurrentRoom() && !this.dataApp.getStorage('room')) {
+  get isHost(): boolean {
+    return !!this.player?.id && this.player.id === this.room.hostId;
+  }
+
+  get claimant(): Player | null {
+    return this.room.playerLastUpdateGame;
+  }
+
+  get canResolveClaim(): boolean {
+    return !!this.player?.id && (this.player.id === this.claimant?.id || this.isHost);
+  }
+
+  ngOnInit(): void {
+    const roomStorage = this.dataApp.getCurrentRoom() ?? this.dataApp.getStorage('room') as RoomModel | null;
+    const playerStorage = this.dataApp.getCurrentPlayer() ?? this.dataApp.getStorage('player') as Player | null;
+
+    if (!roomStorage || !playerStorage) {
       this.dataApp.goToPage('/welcome_view');
       return;
     }
 
+    this.room = roomStorage;
+    this.player = playerStorage;
+    this.dataApp.setPlayer(playerStorage);
+
+    this.dataApp.getPlayer().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((player) => {
+      if (player) this.player = player;
+    });
+
     this.dataApp.getIsViewInitialGame().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       this.isViewInitialGame = value;
-      if (!this.isViewInitialGame) {
-        this.dataApp.setStatusGame(statusGameEnum.Playing);
-        if (this.player?.isHost && !this.generateBallInterval && this.room?.status === statusGameEnum.Playing) {
-          this.startGenerateBalls(0);
-        }
+      if (!value) {
+        this.dataApp.setStatusGame('playing');
       }
       this.cdr.detectChanges();
     });
@@ -90,156 +111,76 @@ export class Game implements OnInit, OnDestroy {
         return;
       }
 
-      const boardStorage = this.dataApp.getStorage('board') as BingoCell[][];
-
+      const boardStorage = this.dataApp.getStorage('board') as BingoCell[][] | null;
       if (boardStorage) {
         this.board = boardStorage;
-        return;
       }
     });
 
-    this.dataApp.getStatusGame().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
-      this.statusGame = val;
-    });
-
-    this.dataApp.getRoom().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((room) => {
-      if (room != null) {
-        this.room = room;
-        this.timerChangeBall = this.room.secondsBalls;
-        return;
-      }
-
-      let romStorage = this.dataApp.getStorage('room') as RoomModel;
-
-      if (romStorage === null) {
-        // TODO: Enviar al welcome porque no existe Room
-        return;
-      };
-      
-      this.room = romStorage;
-      this.dataApp.setRoom(romStorage);
-    });
-
-    this.dataApp.getPlayer().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((player: Player) => {
-      if (player != null) {
-        this.player = player;
-        return;
-      }
-
-      let playerStorage = this.dataApp.getStorage('player') as Player;
-
-      if (playerStorage === null) {
-        // TODO: Enviar al welcome porque no existe player
-        return;
-      };
-      
-      this.player = playerStorage;
-      this.dataApp.setPlayer(playerStorage);
-    });
-
-    this.getRoomInGame();
-  }
-
-  getRoomInGame() {
-    this.roomService.getRoomSuscription(this.room.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((updateRoom: any) => {
-
-      if (!updateRoom) return;
-
-      const statusChanged = updateRoom.status !== this.lastRoomStatus;
-
-      this.room = updateRoom;
-
-      if (statusChanged) {
-        this.lastRoomStatus = updateRoom.status;
-
-        if (updateRoom.status === statusGameEnum.Playing) {
-          this.isWinnerGame = false;
-          this.isValidateBoard = false;
-          this.isSendingBingo = false;
-
-          if (this.player.isHost && !this.generateBallInterval && !this.isViewInitialGame) {
-            this.startGenerateBalls(0);
-          }
-
-        }
-
-        if (updateRoom != null && updateRoom.status === statusGameEnum.Paused) {
-          this.isWinnerGame = false;
-          this.isValidateBoard = true;
-
-          this.stopGenerateBalls();
-
-          this.boardId = updateRoom.gameBoardType;
-          this.calledBalls = updateRoom.calledBalls;
-          this.allBallsCalled = this.buildVerifyBalls(this.calledBalls);
-
-          this.boardLastUpdateGame = updateRoom.boardLastUpdateGame;
-          this.playerLastUpdateGame = updateRoom.playerLastUpdateGame;
-        }
-
-        if (updateRoom != null && updateRoom.status === statusGameEnum.Finished) {
-          this.isValidateBoard = false;
-          this.isWinnerGame = true;
-          this.stopGenerateBalls();
-
-          this.playerLastUpdateGame = updateRoom.playerLastUpdateGame ?? this.playerLastUpdateGame;
-        }
-      }
-
-      this.cdr.detectChanges();
+    this.roomService.getRoomSuscription(this.room.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((room) => {
+      this.onRoomState(room);
     });
   }
 
-  private startGenerateBalls(remainingMs?: number): void {
-    if (!this.player.isHost) {
+  private onRoomState(room: RoomModel): void {
+    this.room = room;
+    this.calledNumbers = new Set(room.calledBalls.map(b => b.number));
+
+    // Revancha: el host reinició la partida, todos vuelven al lobby.
+    if (room.status === 'waiting') {
+      this.dataApp.setIsViewInitialGame(true);
+      this.dataApp.goToPage('/lobby');
       return;
     }
 
-    this.stopGenerateBalls();
-
-    const generateBall: GenerateBallModel = {
-      roomId: this.room.id,
-      playerId: this.player.id
-    };
-
-    const generate = () => {
-      this.roomService
-        .generateBallService(generateBall)
-        .subscribe({ error: (err) => console.error('Error generando bola', err) });
-    };
-
-    const delay =
-      remainingMs ??
-      (this.timerChangeBall * 1000);
-
-    this.generateBallTimeout = setTimeout(() => {
-      generate();
-      this.generateBallInterval = setInterval(() => {
-        generate();
-      }, this.timerChangeBall * 1000);
-    }, delay);
-  }
-
-  private stopGenerateBalls(): void {
-    if (this.generateBallTimeout) {
-      clearTimeout(this.generateBallTimeout);
-      this.generateBallTimeout = null;
+    if (!this.initialized) {
+      this.initialized = true;
+      this.lastRound = room.round;
+      // La cuenta regresiva 3-2-1 solo se ve al empezar; al recargar la página no se repite.
+      const countdownRunning =
+        room.gameType === 1 &&
+        room.status === 'playing' &&
+        room.calledBalls.length === 0 &&
+        !!room.nextBallAt &&
+        room.nextBallAt - Date.now() > room.secondsBalls * 1000;
+      this.dataApp.setIsViewInitialGame(countdownRunning);
     }
 
-    if (this.generateBallInterval) {
-      clearInterval(this.generateBallInterval);
-      this.generateBallInterval = null;
+    const statusChanged = room.status !== this.lastStatus;
+    this.lastStatus = room.status;
+
+    this.isValidateBoard = room.status === 'paused';
+    this.isWinnerGame = room.status === 'finished';
+
+    if (statusChanged) {
+      this.isSendingBingo = false;
     }
+
+    if (room.status === 'paused' && room.gameType === 1) {
+      this.allBallsCalled = this.buildVerifyBalls(room.calledBalls);
+    }
+
+    if (room.exhausted && room.status === 'playing') {
+      this.warnExhausted();
+    }
+
+    this.cdr.detectChanges();
   }
 
-  private buildVerifyBalls(
-    calledBalls: Record<string, CalledBall>): VerifyBall[] {
+  private warnExhausted(): void {
+    if (this.hasWarnedExhausted) return;
+    this.hasWarnedExhausted = true;
 
-    const calledNumbers = new Set<number>();
-
-    Object.values(calledBalls || {}).forEach(ball => {
-      calledNumbers.add(ball.number);
+    infoModal({
+      title: '¡Ya salieron las 75 bolitas!',
+      html: this.isHost
+        ? 'No quedan más bolitas por generar. Verifiquen si alguien tiene bingo; si no hay ganador, puedes finalizar la partida.'
+        : 'No quedan más bolitas por generar. Si completaste tu figura, ¡canta bingo ahora!'
     });
+  }
+
+  private buildVerifyBalls(calledBalls: Ball[]): VerifyBall[] {
+    const calledNumbers = new Set(calledBalls.map(ball => ball.number));
 
     return Array.from({ length: 75 }, (_, index) => {
       const number = index + 1;
@@ -252,31 +193,63 @@ export class Game implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.stopGenerateBalls();
-  }
-
+  /** Cualquier jugador canta bingo: el servidor pausa la partida y verifica. */
   validateBoard() {
     if (this.isSendingBingo || this.isValidateBoard || this.isViewInitialGame || this.isWinnerGame) {
       return;
     }
 
-    this.isSendingBingo = true;
-
-    let pauseRoom: UpdateGameModel = {
-      roomId: this.room.id,
-      playerId: this.player.id,
-      status: statusGameEnum.Paused,
-      board: this.board
+    if (this.room.calledBalls.length === 0) {
+      errorModal({ title: 'Todavía no ha salido ninguna bolita.' });
+      return;
     }
 
-    // Pausar juego
-    this.roomService.updateRoomUser(pauseRoom).subscribe({
-      error: () => {
+    this.isSendingBingo = true;
+
+    this.roomService.callBingo(this.isManual ? undefined : this.board).subscribe((resp) => {
+      if (resp.code !== 'UR001') {
         this.isSendingBingo = false;
-        errorModal({ title: "No se pudo cantar el bingo, intenta de nuevo." });
+        errorModal({ title: resp.message ?? 'No se pudo cantar el bingo, intenta de nuevo.' });
+        this.cdr.detectChanges();
       }
     });
   }
 
+  /** Juego físico: el host saca una bolita (al azar o la que salió de su tómbola). */
+  drawBall(number?: number) {
+    if (this.isDrawing || !this.isHost) return;
+    this.isDrawing = true;
+
+    this.roomService.drawBall(number).subscribe((resp) => {
+      this.isDrawing = false;
+      if (resp.code !== 'UR001') {
+        errorModal({ title: resp.message ?? 'No se pudo sacar la bolita.' });
+      } else {
+        this.manualNumber = '';
+      }
+      this.cdr.detectChanges();
+    });
+  }
+
+  drawManualBall() {
+    const number = parseInt(this.manualNumber, 10);
+    if (Number.isNaN(number) || number < 1 || number > 75) {
+      errorModal({ title: 'Escribe un número entre 1 y 75.' });
+      return;
+    }
+    this.drawBall(number);
+  }
+
+  endGame() {
+    if (this.isEnding || !this.isHost) return;
+    this.isEnding = true;
+
+    this.roomService.endGame().subscribe((resp) => {
+      this.isEnding = false;
+      if (resp.code !== 'UR001') {
+        errorModal({ title: resp.message ?? 'No se pudo finalizar la partida.' });
+      }
+      this.cdr.detectChanges();
+    });
+  }
 }
