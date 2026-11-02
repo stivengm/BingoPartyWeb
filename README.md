@@ -9,8 +9,8 @@ Bingo multijugador en tiempo real. Dos modos de juego:
 
 ```
 BingoPartyWeb/
-├── src/        # Front Angular 21 (GitHub Pages)
-└── server/     # Node + Socket.IO (Render). El servidor es la fuente de verdad
+├── src/        # Front Angular 21
+└── server/     # Node + Socket.IO + servidor estático del front (todo en un servicio de Render)
     ├── src/
     │   ├── bingo-room.ts      # Motor del juego (jugadores, bolitas, bingo, revancha)
     │   ├── room-manager.ts    # Salas activas, códigos de 6 dígitos, limpieza
@@ -39,8 +39,8 @@ Cuando salen las **75 bolitas** todos reciben una alerta para verificar el ganad
 
 ```bash
 npm install
-npm run server:dev   # servidor en http://localhost:3000 (instala antes: npm --prefix server install)
-npm start            # front en http://localhost:4200 (usa environment.development.ts → localhost:3000)
+npm run server:dev   # servidor en http://localhost:3000
+npm start            # front en http://localhost:4200 (environment.development.ts → localhost:3000)
 ```
 
 Para probar el multijugador abre varias pestañas: cada pestaña es un jugador distinto.
@@ -49,40 +49,30 @@ Para probar el multijugador abre varias pestañas: cada pestaña es un jugador d
 | --- | --- |
 | `npm start` | Front con `ng serve` |
 | `npm run server` / `npm run server:dev` | Servidor (el segundo con `--watch`) |
+| `npm run server:check` | Typecheck del servidor |
 | `npm run server:test` | Tests del servidor (`node --test`) |
-| `npm run build` | Build de producción del front |
+| `npm run build` | Build de producción del front en `dist/BingoPartyWeb/` |
+| `npm run start:prod` | Build + servidor sirviendo el front en el puerto 3000 |
 
-Requiere Node ≥ 22.18 para el servidor (ejecuta TypeScript de forma nativa).
+Requiere Node ≥ 22.18 (el servidor ejecuta TypeScript de forma nativa).
 
-## Despliegue
+## Despliegue (Render, un solo servicio)
 
-### 1. Servidor en Render
+Igual que Roll&Run: **un único servicio** de Render construye Angular y el servidor de Node sirve el front y los sockets en el mismo origen. No hay CORS ni URLs que configurar, y recargar `/lobby` o `/game_curse` funciona (el servidor devuelve `index.html` para las rutas de Angular).
 
-**Con el blueprint** (`render.yaml`): en Render → *New* → *Blueprint* → elige este repositorio.
+**Con el blueprint** (`render.yaml`): *New* → *Blueprint* → elige este repositorio.
 
 **A mano**: *New* → *Web Service* → este repositorio, y:
 
 | Campo | Valor |
 | --- | --- |
 | Runtime | Node |
-| Root Directory | `server` |
-| Build Command | `npm install` |
-| Start Command | `npm start` |
+| Build Command | `npm install --include=dev && npm run build` |
+| Start Command | `npm run server` |
 | Health Check Path | `/health` |
 
-Variables de entorno:
+Variables de entorno: `NODE_VERSION=22.18.0` (o superior). Opcionales: `MAX_ROOMS` (salas simultáneas, 2000 por defecto), `CORS_ORIGIN` (solo si sirves el front desde otro dominio).
 
-| Variable | Valor |
-| --- | --- |
-| `NODE_VERSION` | `22.18.0` (o superior) |
-| `CORS_ORIGIN` | Origen del front, sin barra final: `https://stivengm.github.io` (varios separados por coma) |
-| `MAX_ROOMS` | Opcional. Salas simultáneas (por defecto 2000) |
+> El plan gratuito de Render **duerme el servicio** tras unos minutos sin tráfico y tarda ~30-60 s en despertar. Al abrir la URL se despierta; el front conecta el socket desde que carga, y los botones de crear/unirse esperan la conexión (hasta 90 s) en vez de fallar.
 
-> El plan gratuito de Render **duerme el servicio** tras unos minutos sin tráfico y tarda ~30-60 s en despertar. El front conecta el socket nada más abrir la página, así que mientras la persona escribe su alias el servidor ya está despertando. Los botones de crear/unirse esperan a la conexión (hasta 90 s) en vez de fallar.
-
-### 2. Front en GitHub Pages
-
-1. Pon la URL del servicio de Render en `socketUrl` de `src/environments/environment.ts` (por defecto `https://bingopartybackend.onrender.com`).
-2. Haz push a `master`: el workflow `.github/workflows/main.yml` prueba el servidor, compila y publica en GitHub Pages.
-
-Si reutilizas el servicio de Render que ya existía, basta con apuntar su repositorio/Root Directory a `server` y mantener el mismo nombre para que la URL no cambie.
+El workflow de GitHub (`.github/workflows/main.yml`) solo valida tipos, tests y build en cada push; el despliegue lo hace Render al detectar el push a `master` (*Auto-Deploy*).

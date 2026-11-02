@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import { after, before, describe, it } from 'node:test';
 import { io as connect } from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
-import { createGameServer } from '../src/app.ts';
+import { createGameServer, resolveStaticPath } from '../src/app.ts';
 import type { GameServer } from '../src/app.ts';
 
 let server: GameServer;
@@ -41,7 +44,12 @@ function nextState(socket: Socket, predicate: (s: any) => boolean = () => true):
 }
 
 before(async () => {
+  const staticDir = mkdtempSync(path.join(tmpdir(), 'bingo-static-'));
+  writeFileSync(path.join(staticDir, 'index.html'), '<app-root></app-root>');
+  mkdirSync(path.join(staticDir, 'assets'));
+  writeFileSync(path.join(staticDir, 'assets', 'a.txt'), 'hola');
   server = createGameServer({
+    staticDir,
     timings: { countdownMs: 0, msPerSecond: 5, minSeconds: 1 },
     corsOrigin: true,
   });
@@ -59,6 +67,25 @@ describe('servidor', () => {
     const res = await fetch(`${url}/health`);
     assert.equal(res.status, 200);
     assert.equal((await res.json()).ok, true);
+  });
+
+  it('sirve el front y hace fallback SPA para recargar rutas', async () => {
+    const home = await fetch(`${url}/`);
+    assert.equal(home.status, 200);
+    assert.match(await home.text(), /app-root/);
+
+    const lobby = await fetch(`${url}/lobby`);
+    assert.equal(lobby.status, 200);
+    assert.match(await lobby.text(), /app-root/);
+
+    assert.equal((await fetch(`${url}/assets/a.txt`)).status, 200);
+    assert.equal((await fetch(`${url}/missing.js`)).status, 404);
+
+    // Los intentos de salirse de la carpeta (o leer ocultos) se rechazan.
+    const root = path.resolve('/srv/app');
+    assert.equal(resolveStaticPath(root, '/../etc/passwd'), null);
+    assert.equal(resolveStaticPath(root, '/%2e%2e/secret'), null);
+    assert.equal(resolveStaticPath(root, '/.env'), null);
   });
 
   it('crea sala, une jugadores y reparte el estado a todos', async () => {

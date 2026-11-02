@@ -38,7 +38,7 @@ export class RoomService {
     connect(): void {
         if (this.socket) return;
 
-        const socket = io(environment.socketUrl, {
+        const socket = io(environment.socketUrl || undefined, {
             transports: ['websocket', 'polling'],
             reconnection: true,
             reconnectionDelay: 1000,

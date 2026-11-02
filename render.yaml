@@ -1,17 +1,13 @@
 # Blueprint de Render: https://render.com/docs/blueprint-spec
-# Crea el servidor de tiempo real (Socket.IO) de Bingo Party.
+# Un solo servicio: construye Angular y el servidor de Node lo sirve junto con Socket.IO.
 services:
   - type: web
-    name: bingopartybackend
+    name: bingopartyweb
     runtime: node
     plan: free
-    rootDir: server
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm run server
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
         value: 22.18.0
-      # Origen(es) del front (sin barra final). Varios separados por coma.
-      - key: CORS_ORIGIN
-        value: https://stivengm.github.io
